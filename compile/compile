@@ -1,0 +1,6 @@
+Without hepmc:
+g++ -I/home/yuheng/tau_alp_belle2/pythia8245/include -I/home/yuheng/tau_alp_belle2/pythia8245/include/Pythia8 -L/home/yuheng/tau_alp_belle2/pythia8245/lib main.cc pythia_card.cc widthCalculator.cc pythia_card.h -o main -lpythia8 -ldl
+
+To include hepmc:
+
+g++ -I/home/wzeren/Desktop/Research/HEP_Softwares/pythia8243/include -I/home/wzeren/Desktop/Research/HEP_Softwares/pythia8243/include/Pythia8 -I/home/wzeren/Desktop/Research/HEP_Softwares/hepmc/include/ -L/home/wzeren/Desktop/Research/HEP_Softwares/pythia8243/lib -L/home/wzeren/Desktop/Research/HEP_Softwares/hepmc/lib -Wl,-R/home/wzeren/Desktop/Research/HEP_Softwares/hepmc/lib main.cc pythia_card.cc widthCalculator.cc -o main -lpythia8 -ldl -lHepMC      
