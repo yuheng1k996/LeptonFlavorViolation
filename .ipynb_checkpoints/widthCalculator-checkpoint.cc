@@ -15,37 +15,25 @@ namespace widthCalculator {
     }
 
 
-//Tau decay widths:
-    double chiralTauWidth(double mNeutralino, double mtau, double mMeson, double fSMeson,double lambOverMSq)
+//Tau decay widths:  
+    double violationLepWidth(double mPseudoscalar, double mlA, double mlB, double g_ABOverLamb)
     {        
-        if(mtau - mMeson - mNeutralino <= 0)  return 0;    
-	double gammaForUnitRPVCoupling = 1./(128.*pi)*pow(GSL,2)*pow(abs(fSMeson),2)/pow(mtau,3)*(pow(mtau,2) - pow(mMeson,2) + pow(mNeutralino,2) ) * lambdaHalf(pow(mMeson,2), pow(mtau,2), pow(mNeutralino,2));
-	return gammaForUnitRPVCoupling*pow(lambOverMSq,2);
+        if(mlA - mlB - mPseudoscalar <= 0)  return 0;    
+	double gammaForUnitLFVCoupling = lambdaHalf(pow(mlA,2), pow(mlB,2), pow(mPseudoscalar,2))/(16.*pi*pow(mlA,3))*(2*pow(pow(mlA,2) - pow(mlB,2),2) - pow(mPseudoscalar,2)*(pow((mlA-mlB),2)+pow(mlA+mlB,2)));
+	return gammaForUnitLFVCoupling*pow(g_ABOverLamb,2);
     }
-
-
-    double tensorTauWidth(double mNeutralino, double mtau, double mMeson, double fTMeson, double lambOverMSq)
-    {        
-        if(mtau - mMeson - mNeutralino <= 0)  return 0;    
-	double gammaForUnitRPVCoupling = lambdaHalf(pow(mMeson,2), pow(mtau,2), pow(mNeutralino,2))/(2.*pi*pow(mtau,3))*pow(GTL,2)*pow(fTMeson,2)*(2*pow(pow(mtau,2) - pow(mNeutralino,2),2) - pow(mMeson,2)*(pow(mMeson,2)+pow(mtau,2)+pow(mNeutralino,2) ));
-	return gammaForUnitRPVCoupling*pow(lambOverMSq,2);
-    }
-
-
-//Neutralino decay widths: //assuming Dirac neutrinos
-    double chiralNeutralinoWidth(double mNeutralino, double mMeson, double fSMeson,double lambOverMSq)
+ 
+//Pseudoscalar decay widths:
+    double pseudoscalarLepWidth(double mPseudoscalar, double mlA, double g_AAOverLamb)
     {
-        if(mNeutralino - mMeson  <= 0)  return 0;    
-	double gammaForUnitRPVCoupling = 2 *  lambdaHalf( pow(mNeutralino,2), pow(mMeson,2), 0  )/ (128.*pi* pow(mNeutralino,3)) * pow(GSnu , 2) *abs(pow(fSMeson,2)) * (pow(mNeutralino,2) - pow(mMeson,2) ); 
-	return gammaForUnitRPVCoupling*pow(lambOverMSq,2);
+        if(mPseudoscalar - mlA - mlA <= 0)  return 0;    
+	double gammaForUnitLFVCoupling = 2 * lambdaHalf(pow(mPseudoscalar,2), pow(mlA,2), pow(mlA,2))/ (2.*pi)* pow(mlA,1); 
+	return gammaForUnitLFVCoupling*pow(g_AAOverLamb,2);
     }
 
-
-    double tensorNeutralinoWidth(double mNeutralino, double mMeson, double fTMeson, double lambOverMSq)
+    double pseudoscalarGmWidth(double mPseudoscalar, double g_GmGmOverLamb)
     {
-        if(mNeutralino - mMeson  <= 0)  return 0;   
-	double gammaForUnitRPVCoupling = 2 * lambdaHalf( pow(mNeutralino,2), pow(mMeson,2), 0  )/ (2*pi*pow(mNeutralino,3)) * pow(GTnu,2) * abs(pow(fTMeson,2)) * (2*pow(mNeutralino,4) - pow(mMeson,2)*( pow(mMeson,2) + pow(mNeutralino,2) )  ); 
-	return gammaForUnitRPVCoupling*pow(lambOverMSq,2);
+    double gammaForUnitGmCoupling = pow(mPseudoscalar,3)/ (64.*pi);
+    return gammaForUnitGmCoupling*pow(g_GmGmOverLamb,3);
     }
-
 }

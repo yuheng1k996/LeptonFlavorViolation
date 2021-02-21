@@ -16,19 +16,19 @@ namespace widthCalculator {
 
 
 //Tau decay widths:  
-    double violationLepWidth(double mPseudoscalar, double mlAlpha, double mlBeta, double g_AlphaBetaOverLamb)
+    double violationLepWidth(double mPseudoscalar, double mlA, double mlB, double g_ABOverLamb)
     {        
-        if(mlAlpha - mlBeta - mPseudoscalar <= 0)  return 0;    
-	double gammaForUnitLFVCoupling = lambdaHalf(pow(mlAlpha,2), pow(mlBeta,2), pow(mPseudoscalar,2))/(16.*pi*pow(mlAlpha,3))*(2*pow(pow(mlAlpha,2) - pow(mlBeta,2),2) - pow(mPseudoscalar,2)*(pow((mlAlpha-mlBeta),2)+pow(mlAlpha+mlBeta,2)));
-	return gammaForUnitLFVCoupling*pow(g_AlphaBetaOverLamb,2);
+        if(mlA - mlB - mPseudoscalar <= 0)  return 0;    
+	double gammaForUnitLFVCoupling = lambdaHalf(pow(mlA,2), pow(mlB,2), pow(mPseudoscalar,2))/(16.*pi*pow(mlA,3))*(2*pow(pow(mlA,2) - pow(mlB,2),2) - pow(mPseudoscalar,2)*(pow((mlA-mlB),2)+pow(mlA+mlB,2)));
+	return gammaForUnitLFVCoupling*pow(g_ABOverLamb,2);
     }
  
 //Pseudoscalar decay widths:
-    double pseudoscalarLepWidth(double mPseudoscalar, double mlAlpha, double g_AlphaAlphaOverLamb)
+    double pseudoscalarLepWidth(double mPseudoscalar, double mlA, double g_AAOverLamb)
     {
-        if(mPseudoscalar - mlAlpha - mlAlpha <= 0)  return 0;    
-	double gammaForUnitLFVCoupling = 2 * lambdaHalf(pow(mPseudoscalar,2), pow(mlAlpha,2), pow(mlAlpha,2))/ (2.*pi)* pow(mlAlpha,1); 
-	return gammaForUnitLFVCoupling*pow(g_AlphaAlphaOverLamb,2);
+        if(mPseudoscalar - mlA - mlA <= 0)  return 0;    
+	double gammaForUnitLFVCoupling = 2 * lambdaHalf(pow(mPseudoscalar,2), pow(mlA,2), pow(mlA,2))/ (2.*pi)* pow(mlA,1); 
+	return gammaForUnitLFVCoupling*pow(g_AAOverLamb,2);
     }
 
     double pseudoscalarGmWidth(double mPseudoscalar, double g_GmGmOverLamb)

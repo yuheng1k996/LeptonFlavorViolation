@@ -1,4 +1,3 @@
-
 #ifndef _PYTHIACARD
 #define _PYTHIACARD
 
@@ -24,13 +23,13 @@ public:
     
     //lepton flavor violation    
     void setMX(double mX_in) {mX = mX_in;};
-    void setg_TauMuOverLamb(double g_TauMuOverLamb_in) {g_TauMuOverLamb = g_TauMuOverLamb_in;};
-    void setg_TauEleOverLamb(double g_TauEleOverLamb_in) {g_TauEleOverLamb = g_TauEleOverLamb_in;};
-    void setg_MuEleOverLamb(double g_MuEleOverLamb_in) {g_MuEleOverLamb = g_MuEleOverLamb_in;};
-    void setg_TauTauOverLamb(double g_TauTauOverLamb_in) {g_TauTauOverLamb = g_TauTauOverLamb_in;};
-    void setg_MuMuOverLamb(double g_MuMuOverLamb_in) {g_MuMuOverLamb = g_MuMuOverLamb_in;};
-    void setg_EleEleOverLamb(double g_EleEleOverLamb_in) {g_EleEleOverLamb = g_EleEleOverLamb_in;};
-    void setg_GmGmOverLamb(double g_GmGmOverLamb_in) {g_GmGmOverLamb = g_GmGmOverLamb_in;};
+    void setg_TM_Lamb(double g_TM_Lamb_in) {g_TM_Lamb = g_TM_Lamb_in;};
+    void setg_TE_Lamb(double g_TE_Lamb_in) {g_TE_Lamb = g_TE_Lamb_in;};
+    void setg_ME_Lamb(double g_ME_Lamb_in) {g_ME_Lamb = g_ME_Lamb_in;};
+    void setg_TT_Lamb(double g_TT_Lamb_in) {g_TT_Lamb = g_TT_Lamb_in;};
+    void setg_MM_Lamb(double g_MM_Lamb_in) {g_MM_Lamb = g_MM_Lamb_in;};
+    void setg_EE_Lamb(double g_EE_Lamb_in) {g_EE_Lamb = g_EE_Lamb_in;};
+    void setg_GG_Lamb(double g_GG_Lamb_in) {g_GG_Lamb = g_GG_Lamb_in;};
     
     bool doCalculations(); //< evaluates widths 
     bool initPythia(); //< Initialises Pythia, if needed. 
@@ -52,38 +51,38 @@ private:
    
     //lepton flavor violation
     double mX; // given in GeV
-    double g_TauMuOverLamb; // g_taumu/Lambda in GeV^-1
-    double g_TauEleOverLamb; // g_taue/Lambda in GeV^-1
-    double g_MuEleOverLamb; // g_mue/Lambda in GeV^-1
-    double g_TauTauOverLamb; // g_tautau/Lambda in GeV^-1
-    double g_MuMuOverLamb; // g_mumu/Lambda in GeV^-1
-    double g_EleEleOverLamb; // g_ee/Lambda in GeV^-1
-    double g_GmGmOverLamb; // g_gmgm/Lambda in GeV^-1
+    double g_TM_Lamb; // g_taumu/Lambda in GeV^-1
+    double g_TE_Lamb; // g_taue/Lambda in GeV^-1
+    double g_ME_Lamb; // g_mue/Lambda in GeV^-1
+    double g_TT_Lamb; // g_tautau/Lambda in GeV^-1
+    double g_MM_Lamb; // g_mumu/Lambda in GeV^-1
+    double g_EE_Lamb; // g_ee/Lambda in GeV^-1
+    double g_GG_Lamb; // g_gmgm/Lambda in GeV^-1
     
-    double Gammax2tautau(double mX, double g_TauTauOverLamb);
-    double Gammax2mumu(double mX, double g_MuMuOverLamb);
-    double Gammax2ee(double mX, double g_EleEleOverLamb);
-    double Gammax2gmgm(double mX, double g_GmGmOverLamb);
+    double Gammax2tautau(double mX, double g_TT_Lamb);
+    double Gammax2mumu(double mX, double g_MM_Lamb);
+    double Gammax2ee(double mX, double g_EE_Lamb);
+    double Gammax2gmgm(double mX, double g_GG_Lamb);
     
-    double totalGammaX(double mX, double g_TauTauOverLamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverlamb);
-    double ctau(double mX, double g_TauTauOverLamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverLamb);
+    double totalGammaX(double mX, double g_TT_Lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
+    double ctau(double mX, double g_TT_Lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
     
-    double BRx2tautau(double mX, double g_TauTauOverLamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverlamb);
-    double BRx2mumu(double mX, double g_TauTauOverLamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverLamb);
-    double BRx2ee(double mX, double g_TauTauOverLamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverLamb);
-    double BRx2gmgm(double mX, double g_TauTauOverLamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverLamb);
+    double BRx2tautau(double mX, double g_TT_Lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
+    double BRx2mumu(double mX, double g_TT_Lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
+    double BRx2ee(double mX, double g_TT_Lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
+    double BRx2gmgm(double mX, double g_TT_Lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
     
-    double BRx2Visibles(double mX, double g_TauTauOverlamb, double g_MuMuOverLamb, double g_EleEleOverLamb, double g_GmGmOverlamb);
+    double BRx2Visibles(double mX, double g_TT_lamb, double g_MM_Lamb, double g_EE_Lamb, double g_GG_Lamb);
     
-    double Gammatau2xmu(double mX, double g_TauMuOverLamb);
-    double Gammatau2xe(double mX, double g_TauEleOverLamb);
-    double NewTotalGammatau(double mX, double g_TauMuOverLamb, double g_TauEleOverLamb);
-    double Gammamu2xe(double mX, double g_MuEleOverLamb);
-    double NewTotalGammamu(double mX, double g_MuEleOverLamb);
+    double Gammatau2xmu(double mX, double g_TM_Lamb);
+    double Gammatau2xe(double mX, double g_TE_Lamb);
+    double NewTotalGammatau(double mX, double g_TM_Lamb, double g_TE_Lamb);
+    double Gammamu2xe(double mX, double g_ME_Lamb);
+    double NewTotalGammamu(double mX, double g_ME_Lamb);
     
-    double BRtau2xmu(double mX, double g_TauMuOverLamb, double g_TauEleOverLamb);
-    double BRtau2xe(double mX, double g_TauMuOverLamb, double g_TauEleOverLamb);
-    double BRmu2xe(double mX, double g_MuEleOverLamb);
+    double BRtau2xmu(double mX, double g_TM_Lamb, double g_TE_Lamb);
+    double BRtau2xe(double mX, double g_TM_Lamb, double g_TE_Lamb);
+    double BRmu2xe(double mX, double g_ME_Lamb);
     
     double reallyProducedX;
     double reallyObservedX;
