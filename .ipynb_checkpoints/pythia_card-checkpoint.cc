@@ -146,8 +146,8 @@ bool pythia_card::runPythia(int nEventsMC) {
 
 //Creating files to scan
     try{
-        ofstream myfile;
-        myfile.open ("./scanning/data_g_TM_" +floatToString(g_TM_Lamb)+ "_g_TE_" +floatToString(g_TE_Lamb)+ "_g_MM_" +floatToString(g_MM_Lamb)+ "_g_EE_" +floatToString(g_EE_Lamb)+ ".txt");
+        //ofstream myfile;
+        //myfile.open ("./scanning/data_mX_" +floatToString(mX)+ "_g_TM_" +floatToString(g_TM_Lamb)+ "_g_TE_" +floatToString(g_TE_Lamb)+ "_g_MM_" +floatToString(g_MM_Lamb)+ "_g_EE_" +floatToString(g_EE_Lamb)+ ".txt");
         
         for (int iEvent = 0; iEvent < nEventsMC; ++iEvent) {
                 if (!pythia->next()) continue;
@@ -175,8 +175,8 @@ bool pythia_card::runPythia(int nEventsMC) {
         if(verbose)
             pythia->stat();
         //Close the scanning files
-        myfile << producedX << endl;
-        myfile.close();
+        //myfile << producedX << endl;
+        //myfile.close();
     }
     catch(std::exception& e) {
         std::cerr << "!!! Error occured while trying to run Pythia: " << e.what() << std::endl;
@@ -278,7 +278,7 @@ double pythia_card::BRtau2xmu(double mX, double g_TM_Lamb, double g_TE_Lamb)
 
 double pythia_card::BRtau2xe(double mX, double g_TM_Lamb, double g_TE_Lamb)
 {
-	return Gammatau2xe(mX, g_TE_Lamb / NewTotalGammatau(mX, g_TM_Lamb, g_TE_Lamb));
+	return Gammatau2xe(mX, g_TE_Lamb) / NewTotalGammatau(mX, g_TM_Lamb, g_TE_Lamb);
 }
 
 

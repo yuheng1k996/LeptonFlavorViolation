@@ -124,7 +124,7 @@ for i in range(len(sys.argv))[1:]:
                  newdata[0,2]=line[line.find("g_TE_Lamb:")+len("g_TE_Lamb:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xmu:" in l), None)
-                 newdata[0,3]=line[line.find("BRtau2xmu:")+len("reallyobservedN1:"):]
+                 newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xe:" in l), None)
                  newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
@@ -202,7 +202,7 @@ title = r'$g_{\tau e}$ vs. $g_{ee}$'
 xlabel = r'$g_{ee}$ GeV$^{-1}$'
 ylabel = r'$g_{\tau e}$ GeV$^{-1}$'
 zlabel = r'$three_event$'
-filename = "first_test"
+filename = "second_test"
 
 #plot signal
 plot_logx_logy_logz(data[:,1], xlabel, data[:,2], ylabel, data[:,19], zlabel, title, filename, 'k', 'solid', 3 , 1 ,[(0.8,5e-8)],'3signal')

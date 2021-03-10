@@ -49,7 +49,7 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     plt.xlabel(xlabel,fontsize = 16)
     plt.ylabel(ylabel,fontsize = 16)
     plt.title(title,fontsize = 16)
-    plt.axis([1E-8, 1, 1E-8, 1])
+    plt.axis([1E-12, 1e-5, 1E-10, 1e-6])
     zmin, zmax =  1E-3, 1E3 #min([z[i] for i in range(len(z)) if x[i] >= -9 and x[i] <= -5 and y[i] >= -9 and y[i] <= -5 and z[i] != 0.])
 
     ax.set_xscale('log')
@@ -117,14 +117,14 @@ for i in range(len(sys.argv))[1:]:
                  line = next((l for l in f if "mX:" in l), None)
                  newdata[0,0]=line[line.find("mX:")+len("mX:"):]
             with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_EE_Lamb:" in l), None)
-                 newdata[0,1]=line[line.find("g_EE_Lamb:")+len("g_EE_Lamb:"):]
+                 line = next((l for l in f if "g_MM_Lamb:" in l), None)
+                 newdata[0,1]=line[line.find("g_MM_Lamb:")+len("g_MM_Lamb:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_TE_Lamb:" in l), None)
                  newdata[0,2]=line[line.find("g_TE_Lamb:")+len("g_TE_Lamb:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xmu:" in l), None)
-                 newdata[0,3]=line[line.find("BRtau2xmu:")+len("reallyobservedN1:"):]
+                 newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xe:" in l), None)
                  newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
@@ -198,11 +198,11 @@ ax = fig.add_subplot(1, 1, 1)
 plt.rc("text", usetex=True)
          
 #title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
-title = r'$g_{\tau e}$ vs. $g_{ee}$'
-xlabel = r'$g_{ee}$ GeV$^{-1}$'
+title = r'$g_{\tau e}$ vs. $g_{\mu \mu}$'
+xlabel = r'$g_{\mu \mu}$ GeV$^{-1}$'
 ylabel = r'$g_{\tau e}$ GeV$^{-1}$'
 zlabel = r'$three_event$'
-filename = "first_test"
+filename = "2_mX1.0_gTE_gMM"
 
 #plot signal
 plot_logx_logy_logz(data[:,1], xlabel, data[:,2], ylabel, data[:,19], zlabel, title, filename, 'k', 'solid', 3 , 1 ,[(0.8,5e-8)],'3signal')
