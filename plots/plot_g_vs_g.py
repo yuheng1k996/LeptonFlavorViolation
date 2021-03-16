@@ -117,11 +117,11 @@ for i in range(len(sys.argv))[1:]:
                  line = next((l for l in f if "mX:" in l), None)
                  newdata[0,0]=line[line.find("mX:")+len("mX:"):]
             with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_MM_Lamb:" in l), None)
-                 newdata[0,1]=line[line.find("g_MM_Lamb:")+len("g_MM_Lamb:"):]
+                 line = next((l for l in f if "g_CC_Lamb:" in l), None)
+                 newdata[0,1]=line[line.find("g_CC_Lamb:")+len("g_CC_Lamb:"):]
             with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_TE_Lamb:" in l), None)
-                 newdata[0,2]=line[line.find("g_TE_Lamb:")+len("g_TE_Lamb:"):]
+                 line = next((l for l in f if "g_AB_Lamb:" in l), None)
+                 newdata[0,2]=line[line.find("g_AB_Lamb:")+len("g_AB_Lamb:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xmu:" in l), None)
                  newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
@@ -198,11 +198,11 @@ ax = fig.add_subplot(1, 1, 1)
 plt.rc("text", usetex=True)
          
 #title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
-title = r'$g_{\tau e}$ vs. $g_{\mu \mu}$'
-xlabel = r'$g_{\mu \mu}$ GeV$^{-1}$'
-ylabel = r'$g_{\tau e}$ GeV$^{-1}$'
+title = r'$g_{\alpha \beta}$ vs. $g_{\alpha \alpha}$'
+xlabel = r'$g_{\alpha \alpha}$ [GeV$^{-1}$]'
+ylabel = r'$g_{\alpha \beta}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
-filename = "2_mX1.0_gTE_gMM"
+filename = "0_mX1.5_gAB_gCC"
 
 #plot signal
 plot_logx_logy_logz(data[:,1], xlabel, data[:,2], ylabel, data[:,19], zlabel, title, filename, 'k', 'solid', 3 , 1 ,[(0.8,5e-8)],'3signal')
