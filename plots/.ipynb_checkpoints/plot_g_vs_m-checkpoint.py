@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 print ("Loading Libraries")
 import matplotlib
 matplotlib.use('Agg')
@@ -49,7 +49,14 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     plt.xlabel(xlabel,fontsize = 16)
     plt.ylabel(ylabel,fontsize = 16)
     plt.title(title,fontsize = 16)
+    
+    #scenario_0
     plt.axis([-0.01, 1.85, 1E-9, 1e-1])
+    #scenario_13
+    #plt.axis([-0.01, 1.85, 1E-8, 1e-1])
+    #acenario_24
+    #plt.axis([-0.01, 1.85, 1E-9, 1e-4])
+    
     zmin, zmax =  1E-3, 1E3 #min([z[i] for i in range(len(z)) if x[i] >= -9 and x[i] <= -5 and y[i] >= -9 and y[i] <= -5 and z[i] != 0.])
 
     ax.set_xscale('linear')
@@ -104,11 +111,11 @@ for i in range(len(sys.argv))[1:]:
   print ("")
   for resdir in resdircollection.split(":"):
     #os.chdir(resdir)
-        data=np.zeros((1,20))
+        data=np.zeros((1,21))
         print (" - "+resdir)
         #counter = 0
         for filename in os.listdir(resdir):
-            newdata=np.zeros((1,20))
+            newdata=np.zeros((1,21))
             #print(filename)
             #counter = counter + 1
             #print(counter)
@@ -116,12 +123,33 @@ for i in range(len(sys.argv))[1:]:
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "mX:" in l), None)
                  newdata[0,0]=line[line.find("mX:")+len("mX:"):]
+             
+            #scenario_0
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_CC_Lamb:" in l), None)
                  newdata[0,1]=line[line.find("g_CC_Lamb:")+len("g_CC_Lamb:"):]
+            #scenario_13
+            '''with open(resdir+"/"+filename,'r') as f: 
+                 line = next((l for l in f if "g_EE_Lamb:" in l), None)
+                 newdata[0,1]=line[line.find("g_EE_Lamb:")+len("g_EE_Lamb:"):]'''
+            #scenario_24
+            '''with open(resdir+"/"+filename,'r') as f: 
+                 line = next((l for l in f if "g_MM_Lamb:" in l), None)
+                 newdata[0,1]=line[line.find("g_MM_Lamb:")+len("g_MM_Lamb:"):]'''
+            
+            #scenario_0
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_AB_Lamb:" in l), None)
                  newdata[0,2]=line[line.find("g_AB_Lamb:")+len("g_AB_Lamb:"):]
+            #scenario_12
+            '''with open(resdir+"/"+filename,'r') as f: 
+                 line = next((l for l in f if "g_TE_Lamb:" in l), None)
+                 newdata[0,2]=line[line.find("g_TE_Lamb:")+len("g_TE_Lamb:"):]'''
+            #scenario_34
+            '''with open(resdir+"/"+filename,'r') as f: 
+                 line = next((l for l in f if "g_TM_Lamb:" in l), None)
+                 newdata[0,2]=line[line.find("g_TM_Lamb:")+len("g_TM_Lamb:"):]'''
+            
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xmu:" in l), None)
                  newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
@@ -129,50 +157,53 @@ for i in range(len(sys.argv))[1:]:
                  line = next((l for l in f if "BRtau2xe:" in l), None)
                  newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
             with open(resdir+"/"+filename,'r') as f: 
+                 line = next((l for l in f if "BRtau2xmu + BRtau2xe:" in l), None)
+                 newdata[0,5]=line[line.find("BRtau2xmu + BRtau2xe:")+len("BRtau2xmu + BRtau2xe:"):]
+            with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "produced tau excluding those daughters are also tau lepton:" in l), None)
-                 newdata[0,5]=line[line.find("produced tau excluding those daughters are also tau lepton:")+len("produced tau excluding those daughters are also tau lepton:"):]
+                 newdata[0,6]=line[line.find("produced tau excluding those daughters are also tau lepton:")+len("produced tau excluding those daughters are also tau lepton:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "produced X:" in l), None)
-                 newdata[0,6]=line[line.find("produced X:")+len("produced X:"):]
+                 newdata[0,7]=line[line.find("produced X:")+len("produced X:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "Total Gamma [GeV]:" in l), None)
-                 newdata[0,7]=line[line.find("Total Gamma [GeV]:")+len("Total Gamma [GeV]:"):]
+                 newdata[0,8]=line[line.find("Total Gamma [GeV]:")+len("Total Gamma [GeV]:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "ctau [m]:" in l), None)
-                 newdata[0,8]=line[line.find("ctau [m]:")+len("ctau [m]:"):]
+                 newdata[0,9]=line[line.find("ctau [m]:")+len("ctau [m]:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2tautau:" in l), None)
-                 newdata[0,9]=line[line.find("BRx2tautau:")+len("BRx2tautau:"):]
+                 newdata[0,10]=line[line.find("BRx2tautau:")+len("BRx2tautau:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2mumu:" in l), None)
-                 newdata[0,10]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
+                 newdata[0,11]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2ee:" in l), None)
-                 newdata[0,11]=line[line.find("BRx2ee:")+len("BRx2ee:"):]
+                 newdata[0,12]=line[line.find("BRx2ee:")+len("BRx2ee:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2gmgm:" in l), None)
-                 newdata[0,12]=line[line.find("BRx2gmgm:")+len("BRx2gmgm:"):]
+                 newdata[0,13]=line[line.find("BRx2gmgm:")+len("BRx2gmgm:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "observedX:" in l), None)
-                 newdata[0,13]=line[line.find("observedX:")+len("observedX:"):]
+                 newdata[0,14]=line[line.find("observedX:")+len("observedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "visibleX:" in l), None)
-                 newdata[0,14]=line[line.find("visibleX:")+len("visibleX:"):]
+                 newdata[0,15]=line[line.find("visibleX:")+len("visibleX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "X Observed Fiducial efficiency:" in l), None)
-                 newdata[0,15]=line[line.find("X Observed Fiducial efficiency:")+len("X Observed Fiducial efficiency:"):]
+                 newdata[0,16]=line[line.find("X Observed Fiducial efficiency:")+len("X Observed Fiducial efficiency:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "X Visible Fiducial efficiency:" in l), None)
-                 newdata[0,16]=line[line.find("X Visible Fiducial efficiency:")+len("X Visible Fiducial efficiency:"):]
+                 newdata[0,17]=line[line.find("X Visible Fiducial efficiency:")+len("X Visible Fiducial efficiency:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyProducedX:" in l), None)
-                 newdata[0,17]=line[line.find("reallyProducedX:")+len("reallyProducedX:"):]
+                 newdata[0,18]=line[line.find("reallyProducedX:")+len("reallyProducedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyobservedX:" in l), None)
-                 newdata[0,18]=line[line.find("reallyobservedX:")+len("reallyobservedX:"):]
+                 newdata[0,19]=line[line.find("reallyobservedX:")+len("reallyobservedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyvisibleX:" in l), None)
-                 newdata[0,19]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]
+                 newdata[0,20]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]
             data=np.vstack((data,newdata))
     #os.chdir(resdir)
         data=np.delete(data,0,0)
@@ -180,11 +211,6 @@ for i in range(len(sys.argv))[1:]:
 #converting nan to zero
 where_are_NaNs = isnan(data)
 data[where_are_NaNs] = 0
-
-
-#export data
-#np.savetxt("plots/data/data_311.dat", data, fmt="%s")
-
 
 
 # os.chdir("..")	   
@@ -202,10 +228,10 @@ title = r'$g$ vs. $m_{X}$'
 xlabel = r'$m_{X}$ [GeV]'
 ylabel = r'$g$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
-filename = "scenario_0"
+filename = "g_vs_m_0"
 
 #plot signal
-plot_logx_logy_logz(data[:,0], xlabel, data[:,1], ylabel, data[:,19], zlabel, title, filename, 'k', 'solid', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data[:,0], xlabel, data[:,1], ylabel, data[:,20], zlabel, title, filename, 'k', 'solid', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 
 #use data files expoted by Mathematica where MovingAverage was used:
