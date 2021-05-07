@@ -52,8 +52,8 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     
     #scenario_024
     plt.axis([1E-4, 1e+2, 1E-10, 1e-3])
-    #scnario_13
-    #plt.axis([1E-6, 1e+2, 1E-10, 1e-3])
+    #scenario_13
+    plt.axis([1E-6, 1e+2, 1E-10, 1e-3])
     zmin, zmax =  1E-3, 1E3 #min([z[i] for i in range(len(z)) if x[i] >= -9 and x[i] <= -5 and y[i] >= -9 and y[i] <= -5 and z[i] != 0.])
 
     ax.set_xscale('log')
@@ -122,30 +122,30 @@ for i in range(len(sys.argv))[1:]:
                  newdata[0,0]=line[line.find("mX:")+len("mX:"):]
             
             #scenario_0
-            '''with open(resdir+"/"+filename,'r') as f: 
+            with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_CC_Lamb:" in l), None)
-                 newdata[0,1]=line[line.find("g_CC_Lamb:")+len("g_CC_Lamb:"):]'''
+                 newdata[0,1]=line[line.find("g_CC_Lamb:")+len("g_CC_Lamb:"):]
             #scenario_13
             '''with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_EE_Lamb:" in l), None)
                  newdata[0,1]=line[line.find("g_EE_Lamb:")+len("g_EE_Lamb:"):]'''
             #scenario_24
-            with open(resdir+"/"+filename,'r') as f: 
+            '''with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_MM_Lamb:" in l), None)
-                 newdata[0,1]=line[line.find("g_MM_Lamb:")+len("g_MM_Lamb:"):]
+                 newdata[0,1]=line[line.find("g_MM_Lamb:")+len("g_MM_Lamb:"):]'''
             
             #scenario_0
-            '''with open(resdir+"/"+filename,'r') as f: 
+            with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_AB_Lamb:" in l), None)
-                 newdata[0,2]=line[line.find("g_AB_Lamb:")+len("g_AB_Lamb:"):]'''
+                 newdata[0,2]=line[line.find("g_AB_Lamb:")+len("g_AB_Lamb:"):]
             #scenario_12
             '''with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_TE_Lamb:" in l), None)
                  newdata[0,2]=line[line.find("g_TE_Lamb:")+len("g_TE_Lamb:"):]'''
             #scenario_34
-            with open(resdir+"/"+filename,'r') as f: 
+            '''with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_TM_Lamb:" in l), None)
-                 newdata[0,2]=line[line.find("g_TM_Lamb:")+len("g_TM_Lamb:"):]
+                 newdata[0,2]=line[line.find("g_TM_Lamb:")+len("g_TM_Lamb:"):]'''
             
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xmu:" in l), None)
@@ -240,40 +240,40 @@ plt.rc("text", usetex=True)
 #title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
 
 #scenario_0
-'''title = r'$Br(l_{\alpha} \longrightarrow X + l_{\beta})$ vs. $c\tau(X \longrightarrow l_{\alpha} + \bar{l_{\alpha})}$'
-xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + l_{\alpha})$ [m]'
-ylabel = r'$Br(l_{\alpha} \longrightarrow X + l_{\beta})$'
+title = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$ vs. $c\tau(X \longrightarrow l_{\alpha} + \overline{l_{\alpha}})$'
+xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + \overline{l_{\alpha}})$ [m]'
+ylabel = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_0"
-'''
+
 #scenario_1
-'''title = r'$Br(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
 xlabel = r'$c\tau(X \longrightarrow e + \bar{e})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + e)$'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_1"
 '''
 #scenario_2
-'''title = r'$Br(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
 xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + e)$'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_2"
 '''
 #scenario_3
-'''title = r'$Br(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
-xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + l_{\alpha})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + \mu)$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
+xlabel = r'$c\tau(X \longrightarrow e + \bar{e})$ [m]'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + \mu)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_3"
 '''
 #scenario_4
-title = r'$Br(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
 xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + \mu)$'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + \mu)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_4"
-
+'''
 #plot signal
 plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
 plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')

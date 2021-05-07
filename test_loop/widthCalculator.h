@@ -10,7 +10,7 @@ using namespace std;
 typedef complex<double> dcomp;
 
 namespace widthCalculator {
-
+ 
 //physical constants
 	constexpr double pi   = 3.1415926;
 	constexpr double afa  = 7.2973525693e-3;

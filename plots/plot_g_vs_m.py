@@ -156,9 +156,9 @@ for i in range(len(sys.argv))[1:]:
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xe:" in l), None)
                  newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRtau2xmu + BRtau2xe:" in l), None)
-                 newdata[0,5]=line[line.find("BRtau2xmu + BRtau2xe:")+len("BRtau2xmu + BRtau2xe:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "BRtau2xmu + BRtau2xe:" in l), None)
+                 #newdata[0,5]=line[line.find("BRtau2xmu + BRtau2xe:")+len("BRtau2xmu + BRtau2xe:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "produced tau excluding those daughters are also tau lepton:" in l), None)
                  newdata[0,6]=line[line.find("produced tau excluding those daughters are also tau lepton:")+len("produced tau excluding those daughters are also tau lepton:"):]

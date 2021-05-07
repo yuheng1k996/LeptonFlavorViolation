@@ -52,7 +52,7 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     
     #scenario_024
     plt.axis([1E-4, 1e+2, 1E-10, 1e-3])
-    #scnario_13
+    #scenario_13
     #plt.axis([1E-6, 1e+2, 1E-10, 1e-3])
     zmin, zmax =  1E-3, 1E3 #min([z[i] for i in range(len(z)) if x[i] >= -9 and x[i] <= -5 and y[i] >= -9 and y[i] <= -5 and z[i] != 0.])
 
@@ -139,9 +139,9 @@ for i in range(len(sys.argv))[1:]:
                  line = next((l for l in f if "g_AB_L:" in l), None)
                  newdata[0,2]=line[line.find("g_AB_L:")+len("g_AB_L:"):]
             #scenario_12
-            '''with open(resdir+"/"+filename,'r') as f: 
+            with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_TE_L:" in l), None)
-                 newdata[0,2]=line[line.find("g_TE_L:")+len("g_TE_L:"):]'''
+                 newdata[0,2]=line[line.find("g_TE_L:")+len("g_TE_L:"):]
             #scenario_34
             '''with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "g_TM_L:" in l), None)
@@ -240,37 +240,37 @@ plt.rc("text", usetex=True)
 #title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
 
 #scenario_0
-title = r'$Br(l_{\alpha} \longrightarrow X + l_{\beta})$ vs. $c\tau(X \longrightarrow l_{\alpha} + \bar{l_{\alpha})}$'
-xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + l_{\alpha})$ [m]'
-ylabel = r'$Br(l_{\alpha} \longrightarrow X + l_{\beta})$'
+title = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$ vs. $c\tau(X \longrightarrow l_{\alpha} + \overline{l_{\alpha}})$'
+xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + \overline{l_{\alpha}})$ [m]'
+ylabel = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_0_loop"
 
 #scenario_1
-'''title = r'$Br(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
 xlabel = r'$c\tau(X \longrightarrow e + \bar{e})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + e)$'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_1_loop"
 '''
 #scenario_2
-'''title = r'$Br(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
 xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + e)$'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_2_loop"
 '''
 #scenario_3
-'''title = r'$Br(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
-xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + l_{\alpha})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + \mu)$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
+xlabel = r'$c\tau(X \longrightarrow e + \bar{e})$ [m]'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + \mu)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_3_loop"
 '''
 #scenario_4
-'''title = r'$Br(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
+'''title = r'${\rm Br}(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
 xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
-ylabel = r'$Br(\tau \longrightarrow X + \mu)$'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + \mu)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_4_loop"
 '''

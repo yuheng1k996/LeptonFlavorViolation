@@ -174,9 +174,9 @@ for i in range(len(sys.argv))[1:]:
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2tautau:" in l), None)
                  newdata[0,10]=line[line.find("BRx2tautau:")+len("BRx2tautau:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRx2mumu:" in l), None)
-                 newdata[0,11]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "BRx2mumu:" in l), None)
+                 #newdata[0,11]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2ee:" in l), None)
                  newdata[0,12]=line[line.find("BRx2ee:")+len("BRx2ee:"):]
@@ -186,9 +186,9 @@ for i in range(len(sys.argv))[1:]:
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "observedX:" in l), None)
                  newdata[0,14]=line[line.find("observedX:")+len("observedX:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "visibleX:" in l), None)
-                 newdata[0,15]=line[line.find("visibleX:")+len("visibleX:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "visibleX:" in l), None)
+                 #newdata[0,15]=line[line.find("visibleX:")+len("visibleX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "X Observed Fiducial efficiency:" in l), None)
                  newdata[0,16]=line[line.find("X Observed Fiducial efficiency:")+len("X Observed Fiducial efficiency:"):]

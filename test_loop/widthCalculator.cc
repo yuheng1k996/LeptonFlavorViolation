@@ -18,12 +18,20 @@ namespace widthCalculator {
     
     // loop function B1
     dcomp loopB1(double mlA, double mPs) {
-        dcomp t = (4.*(mlA*mlA)/(mPs*mPs), -1E-15);
-        dcomp f ;
-        if (real(t)>=1.){
+        double t;
+        dcomp i;
+        dcomp f;
+        
+        t = pow(2.*mlA/mPs,2);
+        i = -1;
+        i = sqrt(i);
+        
+        if (t>=1.){
             f = asin(1./sqrt(t));
+        }else if (1.>t>=0.){
+            f = pi/2. + (i/2.)*(log((1.+sqrt(1.-t))/(1.-sqrt(1.-t))));
         }else{
-            f = pi/2. + (0.,1.)*log((1.+sqrt(1.-t))/(1.-sqrt(1.-t)))/2.;
+            return 0.;
         }
         return 1.-t*f*f;
     }
@@ -47,13 +55,13 @@ namespace widthCalculator {
 
     double pseudoscalarGmWidth(double mPs, double mlA, double mlB, double mlC, double g_AA_L, double g_BB_L, double g_CC_L)
     {
-    double g_GG_L;
+    double g_2;
     dcomp b;
-        b = 2.*g_AA_L*loopB1(mlA, mPs);
-        b = b + 2.*g_BB_L*loopB1(mlB, mPs);
-        b = b + 2.*g_CC_L*loopB1(mlC, mPs);
-        g_GG_L = (afa/pi)*abs(b);        
-    double gammaForUnitGmCoupling = pow(mPs,3)/ (64.*pi);
-    return gammaForUnitGmCoupling*pow(g_GG_L,2);
+        b = 2*g_AA_L*loopB1(mlA, mPs);
+        b = b + 2*g_BB_L*loopB1(mlB, mPs);
+        b = b + 2*g_CC_L*loopB1(mlC, mPs);
+        g_2 = pow(afa/pi,2)*real(b*conj(b));
+    double gammaForUnitGmCoupling = pow(mPs,3)/ (64*pi);
+    return gammaForUnitGmCoupling*g_2;
     }
 }

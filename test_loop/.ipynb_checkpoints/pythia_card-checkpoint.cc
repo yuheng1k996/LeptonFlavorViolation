@@ -210,6 +210,14 @@ bool pythia_card::runPythia(int nEventsMC) {
     std::cout << "Total Gamma [GeV]: " << totalGammaX(mX,g_TT_L,g_MM_L,g_EE_L) << '\n';
     std::cout << "ctau [m]: " << ctau(mX,g_TT_L,g_MM_L,g_EE_L) << '\n';
     std::cout << '\n';
+    
+    std::cout << "loopB1(tau,mX): " << widthCalculator::loopB1(widthCalculator::mtau,mX) << '\n';
+    std::cout << '\n';
+    std::cout << "loopB1(mu ,mX): " << widthCalculator::loopB1(widthCalculator::mmu, mX) << '\n';
+    std::cout << '\n';
+    std::cout << "loopB1(e  ,mX): " << widthCalculator::loopB1(widthCalculator::me,  mX) << '\n';
+    std::cout << '\n';
+    
     std::cout << "Gammax2tautau: " << Gammax2tautau(mX,g_TT_L) << '\n';
     std::cout << '\n';
     std::cout << "Gammax2mumu: " << Gammax2mumu(mX,g_MM_L) << '\n';
