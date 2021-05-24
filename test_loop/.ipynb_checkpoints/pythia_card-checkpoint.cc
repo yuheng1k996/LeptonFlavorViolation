@@ -138,13 +138,12 @@ bool pythia_card::runPythia(int nEventsMC) {
     double observedX = 0;
     double visibleX = 0;
     
-    double XdecayinsideFidVol = 0;
     
     int xForwardSphere = 0;
     int xBackwardSphere = 0;
 
-//Creating files to scan
     try{
+        //Creating files to scan
         //ofstream myfile;
         //myfile.open ("./scanning/data_mX_" +floatToString(mX)+ "_g_TM_" +floatToString(g_TM_L)+ "_g_TE_" +floatToString(g_TE_L)+ "_g_MM_" +floatToString(g_MM_L)+ "_g_EE_" +floatToString(g_EE_L)+ ".txt");
         
@@ -161,11 +160,15 @@ bool pythia_card::runPythia(int nEventsMC) {
                 	if (abs(pythia->event[i].id()) == 36)
 			{	//count x
 				producedX += 1;
-				double p1 = decayProbabilityBelle2Part1(pythia->event[i]);
-				double p2 = decayProbabilityBelle2Part2(pythia->event[i]);
-                        	observedX += p1+p2;
-				visibleX += (p1+p2)*BRx2Visibles(mX,g_TT_L,g_MM_L,g_EE_L)*detectorEffi(pythia->event[i]);
-				if (decayingInsideFidVol(pythia->event[i])) XdecayinsideFidVol+=1;
+                if(decayingInsideFidVol(pythia->event[i])){
+                    observedX += 1;
+                    //x -> llbar, 
+                    bool l1 = d0z0constraints(pythia->event[pythia->event[i].daughter1()]);
+                    bool l2 = d0z0constraints(pythia->event[pythia->event[i].daughter2()]);
+                    if(l1*l2){
+                    visibleX += BRx2Visibles(mX,g_TT_L,g_MM_L,g_EE_L)*detectorEffi(pythia->event[i]);
+                    }
+                }
 				if (pythia->event[i].p().eta()>0)xForwardSphere+=1;
 				if (pythia->event[i].p().eta()<0)xBackwardSphere+=1;
 			}
@@ -234,7 +237,6 @@ bool pythia_card::runPythia(int nEventsMC) {
     std::cout << '\n';
     std::cout << "BRx2gmgm: " << BRx2gmgm(mX,g_TT_L,g_MM_L,g_EE_L) << '\n';
     std::cout << '\n';
-    std::cout << "X: insideFidVol: " << XdecayinsideFidVol << '\n';
     std::cout << "observedX: " << observedX << '\n';
     std::cout << "visibleX: " << visibleX << '\n';
     std::cout << '\n';
@@ -257,7 +259,15 @@ bool pythia_card::runPythia(int nEventsMC) {
 
 double pythia_card::detectorEffi(Pythia8::Particle XXX)//detector efficiency
 {
-	return 0.1;
+    //fit the efficiency linearly, 1 at r = 100mm and 0 at r = 800mm. otherwise 0
+    double rDec = sqrt(pow(XXX.xDec(),2)+pow(XXX.yDec(),2));
+
+    if(rDec<100 || rDec>800){
+	    return 0.;
+    }
+    else{
+        return -rDec/700. + 8./7.;
+    }
 }
 
 
@@ -367,9 +377,23 @@ double pythia_card::BRx2gmgm(double mX, double g_TT_L, double g_MM_L, double g_E
 double pythia_card::BRx2Visibles(double mX, double g_TT_L, double g_MM_L, double g_EE_L)
 {
 	double BRx2Visibles=1.-BRx2gmgm(mX,g_TT_L,g_MM_L,g_EE_L);
-	return   (BRx2tautau(mX,g_TT_L,g_MM_L,g_EE_L)+BRx2mumu(mX,g_TT_L,g_MM_L,g_EE_L)+BRx2ee(mX,g_TT_L,g_MM_L,g_EE_L)+BRx2gmgm(mX,g_TT_L,g_MM_L,g_EE_L))*BRx2Visibles;
+	return   BRx2Visibles;
 }
 
+
+bool pythia_card::d0z0constraints(Pythia8::Particle XXX)
+{
+    double z0 = abs(XXX.zProd() - ((XXX.xProd()*XXX.px()+XXX.yProd()*XXX.py())*XXX.pz())/(XXX.pT2()));
+    double rT = sqrt(pow(XXX.xProd(),2)+pow(XXX.yProd(),2));
+    double d0 = abs(XXX.px()*XXX.yProd()-XXX.py()*XXX.xProd()) / XXX.pT();
+    double rC = (XXX.pT()/0.45)*1.E3;
+    d0 = sqrt(pow(rC+d0,2)+pow(rT,2)-pow(d0,2))-rC;
+    
+    //require d0 < 0.5cm and z0 < 3cm
+    if (d0 < 5 && z0 < 30){
+        return true;
+    }else {return false;}
+}
 
 bool pythia_card::decayingInsideFidVol(Pythia8::Particle XXX)
 {
@@ -381,9 +405,9 @@ bool pythia_card::decayingInsideFidVol(Pythia8::Particle XXX)
     double rDec = sqrt(pow(XXX.xDec(),2)+pow(XXX.yDec(),2));
     double zDec = XXX.zDec();
     
-    if (rDec > r_min and rDec < r_max and zDec > z_min and zDec < z_max)
+    if (rDec > r_min and rDec < r_max and zDec > z_min and zDec < z_max){
     return true;
-    else return false;
+    }else {return false;}
 }
 
 double pythia_card::decayProbabilityBelle2Part1(Pythia8::Particle XXX) {//Part1 is a symmetric ATLAS-like detector

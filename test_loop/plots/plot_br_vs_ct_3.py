@@ -4,7 +4,7 @@ import matplotlib
 matplotlib.use('Agg')
 import re
 import os, sys
-import pickle
+import pickle, cPickle
 import pprint
 from math import fabs, log, exp
 from numpy import log10
@@ -25,7 +25,7 @@ from matplotlib.pyplot import text
 
 #This script needs to be executed in python2
 
-def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, contourlevel, contourlinewidth, clabel_positions, clabelformat):
+def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, linelabel, contourlevel, contourlinewidth, clabel_positions, clabelformat):
     print ("Plotting '"+title+"'")
 
     # remove invalid entries which have either x or z <= 0
@@ -44,12 +44,14 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     y = np.array(map(log10, newY))
     z = np.array(newZ)
     
-    if x.size == 0:
+    if len(x) == 0:
        return
     plt.xlabel(xlabel,fontsize = 16)
     plt.ylabel(ylabel,fontsize = 16)
     plt.title(title,fontsize = 16)
-    plt.axis([1E-12, 1e-5, 1E-10, 1e-6])
+    
+    #scenario_024
+    plt.axis([1E-4, 1e+2, 1E-10, 1e-3])
     zmin, zmax =  1E-3, 1E3 #min([z[i] for i in range(len(z)) if x[i] >= -9 and x[i] <= -5 and y[i] >= -9 and y[i] <= -5 and z[i] != 0.])
 
     ax.set_xscale('log')
@@ -78,7 +80,7 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     #ax.pcolormesh(X,Y,Zm,vmin=zmin,vmax=zmax,shading='gouraud', norm=mpl.colors.LogNorm(),cmap = colmap)
 
 
-
+    ax.plot(xg,-1*yg,linecolor,label=linelabel)
     cons2 = plt.contour(X, Y, Zm, [contourlevel] ,colors=linecolor,locator=mpl.ticker.LogLocator(), linewidths=contourlinewidth, linestyles = contourstyle)
 #
 
@@ -104,79 +106,99 @@ for i in range(len(sys.argv))[1:]:
   print ("")
   for resdir in resdircollection.split(":"):
     #os.chdir(resdir)
-        data=np.zeros((1,20))
+        data=np.zeros((1,21))
         print (" - "+resdir)
         #counter = 0
         for filename in os.listdir(resdir):
-            newdata=np.zeros((1,20))
+            newdata=np.zeros((1,21))
+            
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "mX:" in l), None)
                  newdata[0,0]=line[line.find("mX:")+len("mX:"):]
+            
+            #scenario_13
             with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_CC_Lamb:" in l), None)
-                 newdata[0,1]=line[line.find("g_CC_Lamb:")+len("g_CC_Lamb:"):]
+                 line = next((l for l in f if "g_EE_L:" in l), None)
+                 newdata[0,1]=line[line.find("g_EE_L:")+len("g_EE_L:"):]
+            
+            #scenario_34
             with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_AB_Lamb:" in l), None)
-                 newdata[0,2]=line[line.find("g_AB_Lamb:")+len("g_AB_Lamb:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRtau2xmu:" in l), None)
-                 newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRtau2xe:" in l), None)
-                 newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "produced tau excluding those daughters are also tau lepton:" in l), None)
-                 newdata[0,5]=line[line.find("produced tau excluding those daughters are also tau lepton:")+len("produced tau excluding those daughters are also tau lepton:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "produced X:" in l), None)
-                 newdata[0,6]=line[line.find("produced X:")+len("produced X:"):]
+                 line = next((l for l in f if "g_TM_L:" in l), None)
+                 newdata[0,2]=line[line.find("g_TM_L:")+len("g_TM_L:"):]
+            
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "BRtau2xmu:" in l), None)
+                 #newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "BRtau2xe:" in l), None)
+                 #newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "BRtau2xmu + BRtau2xe:" in l), None)
+                 #newdata[0,5]=line[line.find("BRtau2xmu + BRtau2xe:")+len("BRtau2xmu + BRtau2xe:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "produced tau excluding those daughters are also tau lepton:" in l), None)
+                 #newdata[0,6]=line[line.find("produced tau excluding those daughters are also tau lepton:")+len("produced tau excluding those daughters are also tau lepton:"):]
+            #with open(resdir+"/"+filename,'r') as f: 
+                 #line = next((l for l in f if "produced X:" in l), None)
+                 #newdata[0,7]=line[line.find("produced X:")+len("produced X:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "Total Gamma [GeV]:" in l), None)
-                 newdata[0,7]=line[line.find("Total Gamma [GeV]:")+len("Total Gamma [GeV]:"):]
+                 newdata[0,8]=line[line.find("Total Gamma [GeV]:")+len("Total Gamma [GeV]:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "ctau [m]:" in l), None)
-                 newdata[0,8]=line[line.find("ctau [m]:")+len("ctau [m]:"):]
+                 newdata[0,9]=line[line.find("ctau [m]:")+len("ctau [m]:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2tautau:" in l), None)
-                 newdata[0,9]=line[line.find("BRx2tautau:")+len("BRx2tautau:"):]
+                 newdata[0,10]=line[line.find("BRx2tautau:")+len("BRx2tautau:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2mumu:" in l), None)
-                 newdata[0,10]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
+                 newdata[0,11]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2ee:" in l), None)
-                 newdata[0,11]=line[line.find("BRx2ee:")+len("BRx2ee:"):]
+                 newdata[0,12]=line[line.find("BRx2ee:")+len("BRx2ee:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRx2gmgm:" in l), None)
-                 newdata[0,12]=line[line.find("BRx2gmgm:")+len("BRx2gmgm:"):]
+                 newdata[0,13]=line[line.find("BRx2gmgm:")+len("BRx2gmgm:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "observedX:" in l), None)
-                 newdata[0,13]=line[line.find("observedX:")+len("observedX:"):]
+                 newdata[0,14]=line[line.find("observedX:")+len("observedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "visibleX:" in l), None)
-                 newdata[0,14]=line[line.find("visibleX:")+len("visibleX:"):]
+                 newdata[0,15]=line[line.find("visibleX:")+len("visibleX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "X Observed Fiducial efficiency:" in l), None)
-                 newdata[0,15]=line[line.find("X Observed Fiducial efficiency:")+len("X Observed Fiducial efficiency:"):]
+                 newdata[0,16]=line[line.find("X Observed Fiducial efficiency:")+len("X Observed Fiducial efficiency:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "X Visible Fiducial efficiency:" in l), None)
-                 newdata[0,16]=line[line.find("X Visible Fiducial efficiency:")+len("X Visible Fiducial efficiency:"):]
+                 newdata[0,17]=line[line.find("X Visible Fiducial efficiency:")+len("X Visible Fiducial efficiency:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyProducedX:" in l), None)
-                 newdata[0,17]=line[line.find("reallyProducedX:")+len("reallyProducedX:"):]
+                 newdata[0,18]=line[line.find("reallyProducedX:")+len("reallyProducedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyobservedX:" in l), None)
-                 newdata[0,18]=line[line.find("reallyobservedX:")+len("reallyobservedX:"):]
+                 newdata[0,19]=line[line.find("reallyobservedX:")+len("reallyobservedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyvisibleX:" in l), None)
-                 newdata[0,19]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]
+                 newdata[0,20]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]
             data=np.vstack((data,newdata))
     #os.chdir(resdir)
         data=np.delete(data,0,0)
-
+  if i==1:
+    data1=data
+  elif i==2:
+    data2=data
+  elif i==3:
+    data3=data
+    
+    
+        
 #converting nan to zero
-where_are_NaNs = isnan(data)
-data[where_are_NaNs] = 0
-
+where_are_NaNs = isnan(data1)
+data1[where_are_NaNs] = 0
+where_are_NaNs = isnan(data2)
+data2[where_are_NaNs] = 0
+where_are_NaNs = isnan(data3)
+data2[where_are_NaNs] = 0
 
 # os.chdir("..")	   
 print ("Plotting")
@@ -187,49 +209,23 @@ plt.rc("text", usetex=True)
 fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
 ax = fig.add_subplot(1, 1, 1) 
 plt.rc("text", usetex=True)
-         
-#title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
-title = r'$g_{\alpha \beta}$ vs. $g_{\alpha \alpha}$'
-xlabel = r'$g_{\alpha \alpha}$ [GeV$^{-1}$]'
-ylabel = r'$g_{\alpha \beta}$ [GeV$^{-1}$]'
+
+
+#scenario_2
+title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
+xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
+ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
-filename = "0_mX1.0_gAB_gCC"
+filename = "br_vs_ct_2_loop"
 
 #plot signal
-plot_logx_logy_logz(data[:,1], xlabel, data[:,2], ylabel, data[:,19], zlabel, title, filename, 'k', 'solid', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k', '-', '$mX = 1.5   GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r', '-', '$mX = 0.05  GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c', '-', '$mX = 0.005 GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 
-#use data files expoted by Mathematica where MovingAverage was used:
-#signal311NoBG = genfromtxt("plots/data/signal_311_NoBG.dat");
-#signal311NoBG1InvAb = genfromtxt("plots/data/signal_311_NoBG_1InvAb.dat");
+plt.legend(loc='lower right', shadow=True, fontsize='x-large')
 
-#plt.plot(signal311NoBG[:,0], signal311NoBG[:,1],  color='blue',linewidth=1,linestyle='solid' ,label=r"$N_S = ~ \,$3, 50 ab$^{-1}$ (Belle II)" );
-#plt.plot(signal311NoBG1InvAb[:,0], signal311NoBG1InvAb[:,1],  color='darkturquoise',linewidth=1,linestyle='solid' ,label=r"$N_S = ~ \,$3, 1 ab$^{-1}$ (Belle)" );
-
-plt.legend(loc='upper right',prop={'size': 9})
-
-#plot ctau
-#for exponent in range(-7,5,2):
-#	plot_logx_logy_logz(data[:,0], xlabel, data[:,1], ylabel, data[:,4], zlabel, title, filename, 'darkorange', 'dashed', 10**exponent,0.5,[(1.4,2e-4)],'log')
-#for exponent in range(5,6):
-#	plot_logx_logy_logz(data[:,0], xlabel, data[:,1], ylabel, data[:,4], zlabel, title, filename, 'darkorange', 'dashed', 10**exponent,0.5,[(0.5,2e-9)],'log')
-
-
-#plot tau decay BR constraint   removed because it is always for ctau < 1 m
-#plot_logx_logy_logz(data[:,0], xlabel, data[:,1], ylabel, data[:,8], zlabel, title, filename, 'red', 'dashdot', 2*sigmaBrtaupinu , 0.5, [(1.35,8e-6)],'tauBR')   
-
-
-#plot LQD coupling constraint
-#msfermion=[1e3,5e3]
-#for mass in msfermion:
-#	limit = 0.20/(1e3*mass)+0.046/(mass**2)
-#	plt.plot([0,2],[limit,limit],linestyle='dashed',color='red',linewidth=0.5)
-#	plt.text(0.59, limit*0.92, r"$m_{\tilde{d}_{R}}=" + str(int(mass/1000))  + "$ TeV", color='red',ha='left',va='top', fontsize = '8')
-
-
-#ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(0.1))
-#ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(0.05))
-#ax.xaxis.set_minor_formatter(mpl.ticker.NullFormatter())
 
 plt.grid(which='major',axis='x',alpha=0.5,linestyle='--',linewidth=0.5)
 plt.grid(which='major',axis='y',alpha=0.5,linestyle='--',linewidth=0.5)
