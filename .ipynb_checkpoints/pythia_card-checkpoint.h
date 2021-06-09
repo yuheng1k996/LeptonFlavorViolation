@@ -43,7 +43,8 @@ private:
     bool verbose; //< declares amount of Information Pythia writes
     
     double number_total_tau_tau;//total number of ee->tautau events 
-     
+    
+    bool d0z0constraints(Pythia8::Particle XXX);
     bool decayingInsideFidVol(Pythia8::Particle XXX); 
     double detectorEffi(Pythia8::Particle XXX);
     double decayProbabilityBelle2Part1(Pythia8::Particle XXX);

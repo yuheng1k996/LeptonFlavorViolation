@@ -218,9 +218,9 @@ zlabel = r'$three_event$'
 filename = "g_vs_g_1_loop"
 
 #plot signal
-plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k', '-', '$mX = 1.5   GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r', '-', '$mX = 0.05  GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c', '-', '$mX = 0.005 GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k', '-', r'$m_{X} = 1.500 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r', '-', r'$m_{X} = 0.050 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c', '-', r'$m_{X} = 0.005 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 
 plt.legend(loc='lower left', shadow=True, fontsize='x-large')

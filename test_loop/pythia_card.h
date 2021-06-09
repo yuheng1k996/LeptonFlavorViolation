@@ -45,10 +45,9 @@ private:
      
     bool d0z0constraints(Pythia8::Particle XXX);
     bool decayingInsideFidVol(Pythia8::Particle XXX); 
-    double detectorEffi(Pythia8::Particle XXX);
-    double decayProbabilityBelle2Part1(Pythia8::Particle XXX);
-    double decayProbabilityBelle2Part2(Pythia8::Particle XXX);
-   
+    double baselineefficiency(int i);
+    double DispTrackEff(Pythia8::Particle XXX);
+
     //lepton flavor violation
     double mX; // given in GeV
     double g_TM_L; // g_taumu/Lambda in GeV^-1
@@ -76,15 +75,12 @@ private:
     double Gammatau2xmu(double mX, double g_TM_L);
     double Gammatau2xe(double mX, double g_TE_L);
     double NewTotalGammatau(double mX, double g_TM_L, double g_TE_L);
-    double Gammamu2xe(double mX, double g_ME_L);
-    double NewTotalGammamu(double mX, double g_ME_L);
+
     
     double BRtau2xmu(double mX, double g_TM_L, double g_TE_L);
     double BRtau2xe(double mX, double g_TM_L, double g_TE_L);
-    double BRmu2xe(double mX, double g_ME_L);
     
     double reallyProducedX;
-    double reallyObservedX;
     
 };
 #endif

@@ -165,7 +165,16 @@ bool pythia_card::runPythia(int nEventsMC) {
 				double p1 = decayProbabilityBelle2Part1(pythia->event[i]);
 				double p2 = decayProbabilityBelle2Part2(pythia->event[i]);
                         	observedX += p1+p2;
-				visibleX += (p1+p2)*BRx2Visibles(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)*detectorEffi(pythia->event[i]);
+                    
+                    //x -> llbar,
+                    //old version_without d0z0 constraints
+                    //visibleX += (p1+p2)*BRx2Visibles(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)*detectorEffi(pythia->event[i]);
+                    
+                    //new version_with d0z0 constraints
+                    bool l1 = d0z0constraints(pythia->event[pythia->event[i].daughter1()]);
+                    bool l2 = d0z0constraints(pythia->event[pythia->event[i].daughter2()]);
+                       if(l1*l2){
+				        visibleX += (p1+p2)*BRx2Visibles(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)*detectorEffi(pythia->event[i]);}
 				if (decayingInsideFidVol(pythia->event[i])) XdecayinsideFidVol+=1;
 				if (pythia->event[i].p().eta()>0)xForwardSphere+=1;
 				if (pythia->event[i].p().eta()<0)xBackwardSphere+=1;
@@ -250,7 +259,18 @@ bool pythia_card::runPythia(int nEventsMC) {
 
 double pythia_card::detectorEffi(Pythia8::Particle XXX)//detector efficiency
 {
-	return 0.1;
+    //old version_const
+	//return 0.1;
+    
+    //new version_linear decay, 1 at r = 100mm and 0 at r = 800mm. otherwise 0
+    double rDec = sqrt(pow(XXX.xDec(),2)+pow(XXX.yDec(),2));
+
+    if(rDec<100 || rDec>800){
+	    return 0.;
+    }
+    else{
+        return -rDec/700. + 8./7.;
+    }
 }
 
 
@@ -363,6 +383,21 @@ double pythia_card::BRx2Visibles(double mX, double g_TT_Lamb, double g_MM_Lamb, 
 	return   (BRx2tautau(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)+BRx2mumu(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)+BRx2ee(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)+BRx2gmgm(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb))*BRx2Visibles;
 }
 
+bool pythia_card::d0z0constraints(Pythia8::Particle XXX)
+{
+    double z0 = abs(XXX.zProd() - ((XXX.xProd()*XXX.px()+XXX.yProd()*XXX.py())*XXX.pz())/(XXX.pT2()));
+    double rT = sqrt(pow(XXX.xProd(),2)+pow(XXX.yProd(),2));
+    double d0 = abs(XXX.px()*XXX.yProd()-XXX.py()*XXX.xProd()) / XXX.pT();
+    double rC = (XXX.pT()/0.45)*1.E3;
+    d0 = sqrt(pow(rC+d0,2)+pow(rT,2)-pow(d0,2))-rC;
+    
+    //require d0 < 0.5cm and z0 < 3cm
+    if (d0 < 5 && z0 < 30){
+        //std::cout << "d0: " << d0 << '\n';
+        //std::cout << "z0: " << z0 << '\n';
+        return true;
+    }else {return false;}
+}
 
 bool pythia_card::decayingInsideFidVol(Pythia8::Particle XXX)
 {
@@ -434,5 +469,4 @@ double pythia_card::decayProbabilityBelle2Part2(Pythia8::Particle XXX) {//Part2 
     // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:            
     return  exp(-L1/(beta_z*gamma*ctau(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb))) * (1. - exp(-L2/(beta_z*gamma*ctau(mX,g_TT_Lamb,g_MM_Lamb,g_EE_Lamb,g_GG_Lamb)))); 
 }
-
 

@@ -25,7 +25,7 @@ from matplotlib.pyplot import text
 
 #This script needs to be executed in python2
 
-def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, contourlevel, contourlinewidth, clabel_positions, clabelformat):
+def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, linelabel, contourlevel, contourlinewidth, clabel_positions, clabelformat):
     print ("Plotting '"+title+"'")
 
     # remove invalid entries which have either x or z <= 0
@@ -82,7 +82,7 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     #ax.pcolormesh(X,Y,Zm,vmin=zmin,vmax=zmax,shading='gouraud', norm=mpl.colors.LogNorm(),cmap = colmap)
 
 
-
+    ax.plot(xg,-1*yg,linecolor,label=linelabel)
     cons2 = plt.contour(X, Y, Zm, [contourlevel] ,colors=linecolor,locator=mpl.ticker.LogLocator(), linewidths=contourlinewidth, linestyles = contourstyle)
 #
 
@@ -239,12 +239,17 @@ plt.rc("text", usetex=True)
 
 #title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
 
+#plot_signal
 #scenario_0
-title = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$ vs. $c\tau(X \longrightarrow l_{\alpha} + \overline{l_{\alpha}})$'
-xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + \overline{l_{\alpha}})$ [m]'
+title = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$ vs. $c\tau(X \longrightarrow l_{\alpha} + \overline{l}_{\alpha})$'
+xlabel = r'$c\tau(X \longrightarrow l_{\alpha} + \overline{l}_{\alpha})$ [m]'
 ylabel = r'${\rm Br}(l_{\alpha} \longrightarrow X + l_{\beta})$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_0"
+
+plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k','-', r'$m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r','-', r'$m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c','-', r'$m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 #scenario_1
 '''title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
@@ -252,6 +257,10 @@ xlabel = r'$c\tau(X \longrightarrow e + \bar{e})$ [m]'
 ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_1"
+
+plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k','-', r'$m_{X} = 1.500 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r','-', r'$m_{X} = 0.050 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c','-', r'$m_{X} = 0.005 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
 #scenario_2
 '''title = r'${\rm Br}(\tau \longrightarrow X + e)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
@@ -259,6 +268,10 @@ xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
 ylabel = r'${\rm Br}(\tau \longrightarrow X + e)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_2"
+
+plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k','-', r'$m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r','-', r'$m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c','-', r'$m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
 #scenario_3
 '''title = r'${\rm Br}(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow e + \bar{e})$'
@@ -266,6 +279,10 @@ xlabel = r'$c\tau(X \longrightarrow e + \bar{e})$ [m]'
 ylabel = r'${\rm Br}(\tau \longrightarrow X + \mu)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_3"
+
+plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k','-', r'$m_{X} = 1.500 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r','-', r'$m_{X} = 0.050 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c','-', r'$m_{X} = 0.005 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
 #scenario_4
 '''title = r'${\rm Br}(\tau \longrightarrow X + \mu)$ vs. $c\tau(X \longrightarrow \mu + \bar{\mu})$'
@@ -273,12 +290,11 @@ xlabel = r'$c\tau(X \longrightarrow \mu + \bar{\mu})$ [m]'
 ylabel = r'${\rm Br}(\tau \longrightarrow X + \mu)$'
 zlabel = r'$three_event$'
 filename = "br_vs_ct_4"
-'''
-#plot signal
-plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
+plot_logx_logy_logz(data1[:,9], xlabel, data1[:,5], ylabel, data1[:,20], zlabel, title, filename, 'k','-', r'$m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,9], xlabel, data2[:,5], ylabel, data2[:,20], zlabel, title, filename, 'r','-', r'$m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel, title, filename, 'c','-', r'$m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+'''
 
 #use data files expoted by Mathematica where MovingAverage was used:
 #signal311NoBG = genfromtxt("plots/data/signal_311_NoBG.dat");
@@ -287,7 +303,7 @@ plot_logx_logy_logz(data3[:,9], xlabel, data3[:,5], ylabel, data3[:,20], zlabel,
 #plt.plot(signal311NoBG[:,0], signal311NoBG[:,1],  color='blue',linewidth=1,linestyle='solid' ,label=r"$N_S = ~ \,$3, 50 ab$^{-1}$ (Belle II)" );
 #plt.plot(signal311NoBG1InvAb[:,0], signal311NoBG1InvAb[:,1],  color='darkturquoise',linewidth=1,linestyle='solid' ,label=r"$N_S = ~ \,$3, 1 ab$^{-1}$ (Belle)" );
 
-plt.legend(loc='upper right',prop={'size': 9})
+plt.legend(loc='lower left', shadow=True, fontsize='large')
 
 #plot ctau
 #for exponent in range(-7,5,2):

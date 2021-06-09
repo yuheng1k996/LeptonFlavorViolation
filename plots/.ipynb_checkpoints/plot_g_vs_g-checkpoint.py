@@ -25,7 +25,7 @@ from matplotlib.pyplot import text
 
 #This script needs to be executed in python2
 
-def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, contourlevel, contourlinewidth, clabel_positions, clabelformat):
+def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, linelabel, contourlevel, contourlinewidth, clabel_positions, clabelformat):
     print ("Plotting '"+title+"'")
 
     # remove invalid entries which have either x or z <= 0
@@ -82,7 +82,7 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     #ax.pcolormesh(X,Y,Zm,vmin=zmin,vmax=zmax,shading='gouraud', norm=mpl.colors.LogNorm(),cmap = colmap)
 
 
-
+    ax.plot(xg,-1*yg,linecolor,label=linelabel)
     cons2 = plt.contour(X, Y, Zm, [contourlevel] ,colors=linecolor,locator=mpl.ticker.LogLocator(), linewidths=contourlinewidth, linestyles = contourstyle)
 #
 
@@ -206,20 +206,36 @@ for i in range(len(sys.argv))[1:]:
         data=np.delete(data,0,0)
   if i==1:
     data1=data
+    
   elif i==2:
     data2=data
   elif i==3:
     data3=data
+    '''
+    #testing
+  elif i==4:
+    data4=data
     
-    
+  elif i==5:
+    data5=data
+    '''
         
 #converting nan to zero
 where_are_NaNs = isnan(data1)
 data1[where_are_NaNs] = 0
+
 where_are_NaNs = isnan(data2)
 data2[where_are_NaNs] = 0
 where_are_NaNs = isnan(data3)
-data2[where_are_NaNs] = 0
+data3[where_are_NaNs] = 0
+'''
+#testing
+where_are_NaNs = isnan(data4)
+data4[where_are_NaNs] = 0
+
+where_are_NaNs = isnan(data5)
+data5[where_are_NaNs] = 0
+'''
 
 
 #export data
@@ -239,6 +255,7 @@ plt.rc("text", usetex=True)
          
 #title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
 
+#plot_signal
 #scenario_0
 title = r'$g_{\alpha \beta}$ vs. $g_{\alpha \alpha}$'
 xlabel = r'$g_{\alpha \alpha}$ [GeV$^{-1}$]'
@@ -246,12 +263,27 @@ ylabel = r'$g_{\alpha \beta}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
 filename = "g_vs_g_0"
 
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k','-',r'$m_{X} = 1.5\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r','-',r'$m_{X} = 1.0\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c','-',r'$m_{X} = 0.5\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+'''
+#testing
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'g','-',r'$m_{X} = 1.3\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'm','-',r'$m_{X} = 1.1\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+'''
+
 #scenario_1
 '''title = r'$g_{\tau e}$ vs. $g_{ee}$'
 xlabel = r'$g_{ee}$ [GeV$^{-1}$]'
 ylabel = r'$g_{\tau e}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
 filename = "g_vs_g_1"
+
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k','-',r'$m_{X} = 1.500\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r','-',r'$m_{X} = 0.050\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c','-',r'$m_{X} = 0.005\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
 #scenario_2
 '''title = r'$g_{\tau e}$ vs. $g_{\mu \mu}$'
@@ -259,6 +291,10 @@ xlabel = r'$g_{\mu \mu}$ [GeV$^{-1}$]'
 ylabel = r'$g_{\tau e}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
 filename = "g_vs_g_2"
+
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k','-',r'$m_{X} = 1.5\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r','-',r'$m_{X} = 1.0\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c','-',r'$m_{X} = 0.5\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
 #scenario_3
 '''title = r'$g_{\tau \mu}$ vs. $g_{ee}$'
@@ -266,6 +302,10 @@ xlabel = r'$g_{ee}$ [GeV$^{-1}$]'
 ylabel = r'$g_{\tau \mu}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
 filename = "g_vs_g_3"
+
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k','-',r'$m_{X} = 1.500\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r','-',r'$m_{X} = 0.050\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c','-',r'$m_{X} = 0.005\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
 #scenario_4
 '''title = r'$g_{\tau \mu}$ vs. $g_{\mu \mu}$'
@@ -273,11 +313,11 @@ xlabel = r'$g_{\mu \mu}$ [GeV$^{-1}$]'
 ylabel = r'$g_{\tau \mu}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
 filename = "g_vs_g_4"
+
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k','-',r'$m_{X} = 1.5\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r','-',r'$m_{X} = 1.0\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c','-',r'$m_{X} = 0.5\:\textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 '''
-#plot signal
-plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c', '-', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 
 #use data files expoted by Mathematica where MovingAverage was used:
@@ -287,7 +327,7 @@ plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel,
 #plt.plot(signal311NoBG[:,0], signal311NoBG[:,1],  color='blue',linewidth=1,linestyle='solid' ,label=r"$N_S = ~ \,$3, 50 ab$^{-1}$ (Belle II)" );
 #plt.plot(signal311NoBG1InvAb[:,0], signal311NoBG1InvAb[:,1],  color='darkturquoise',linewidth=1,linestyle='solid' ,label=r"$N_S = ~ \,$3, 1 ab$^{-1}$ (Belle)" );
 
-plt.legend(loc='upper right',prop={'size': 9})
+plt.legend(loc='lower left', shadow=True, fontsize='large')
 
 #plot ctau
 #for exponent in range(-7,5,2):

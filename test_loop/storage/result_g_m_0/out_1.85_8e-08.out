@@ -1,7 +1,7 @@
 mX:  1.85
 g_AB_L:  8e-08
 g_CC_L:  8e-08
-NMC 10000
+NMC 3000000
 
  *-------  PYTHIA Process Initialization  --------------------------*
  |                                                                  |
@@ -14,7 +14,7 @@ NMC 10000
  |                                                    |             |
  |------------------------------------------------------------------|
  |                                                    |             |
- | f fbar -> f' fbar' (s-channel gamma*)          223 |   1.327e-04 |
+ | f fbar -> f' fbar' (s-channel gamma*)          223 |   1.561e-04 |
  |                                                                  |
  *-------  End PYTHIA Process Initialization -----------------------*
 
@@ -28,10 +28,11 @@ NMC 10000
  | Beams:idA                                     |                       11 |         2212                         | 
  | Beams:idB                                     |                      -11 |         2212                         | 
  | HadronLevel:Hadronize                         |                      off |           on                         | 
- | Next:numberCount                              |                    10000 |         1000           0             | 
+ | Next:numberCount                              |                   100000 |         1000           0             | 
  | PartonLevel:MPI                               |                      off |           on                         | 
  | Random:seed                                   |                        0 |           -1               900000000 | 
  | Random:setSeed                                |                       on |          off                         | 
+ | ResonanceWidths:minWidth                      |               1.9700e-30 |   1.9700e-19  1.0000e-30             | 
  | WeakSingleBoson:ffbar2ffbar(s:gm)             |                       on |          off                         | 
  |                                                                                                                 | 
  *-------  End PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings  -----------------------------* 
@@ -60,14 +61,14 @@ NMC 10000
  Beam A: id =     11, pz =  5.292e+00, e =  5.292e+00, m =  5.110e-04.
  Beam B: id =    -11, pz = -5.292e+00, e =  5.292e+00, m =  5.110e-04.
 
- In 1: id =   11, x =  1.000e+00, pdf =  1.326e+08 at Q2 =  1.106e+02.
- In 2: id =  -11, x =  9.871e-01, pdf =  2.827e+00 at same Q2.
+ In 1: id =   11, x =  8.209e-01, pdf =  1.602e-01 at Q2 =  9.194e+01.
+ In 2: id =  -11, x =  1.000e+00, pdf =  1.169e+06 at same Q2.
 
  Subprocess f fbar -> f' fbar' (s-channel gamma*) with code 223 is 2 -> 2.
- It has sHat =  1.106e+02,    tHat = -6.414e+01,    uHat = -4.641e+01,
-       pTHat =  4.884e+00,   m3Hat =  1.777e+00,   m4Hat =  1.777e+00,
-    thetaHat =  1.732e+00,  phiHat =  7.586e-01.
-     alphaEM =  7.631e-03,  alphaS =  1.978e-01    at Q2 =  1.106e+02.
+ It has sHat =  9.194e+01,    tHat = -4.592e+01,    uHat = -4.602e+01,
+       pTHat =  4.453e+00,   m3Hat =  1.777e+00,   m4Hat =  1.777e+00,
+    thetaHat =  1.570e+00,  phiHat =  6.922e-01.
+     alphaEM =  7.623e-03,  alphaS =  2.023e-01    at Q2 =  9.194e+01.
 
  Impact parameter b =  0.000e+00 gives enhancement factor =  1.000e+00.
  Max pT scale for MPI =  1.058e+01, ISR =  1.058e+01, FSR =  1.058e+01.
@@ -81,11 +82,11 @@ NMC 10000
      0         90  (system)           -11     0     0     0     0     0     0      0.000      0.000      3.000     11.000     10.583
      1         11  (e-)               -12     0     0     3     0     0     0      0.000      0.000      7.000      7.000      0.001
      2        -11  (e+)               -12     0     0     4     0     0     0      0.000      0.000     -4.000      4.000      0.001
-     3         11  (e-)               -21     1     0     5     6     0     0      0.000      0.000      7.000      7.000      0.000
-     4        -11  (e+)               -21     2     0     5     6     0     0      0.000      0.000     -3.948      3.948      0.000
-     5         15  tau-                23     3     4     0     0     0     0      3.545      3.360      0.700      5.244      1.777
-     6        -15  tau+                23     3     4     0     0     0     0     -3.545     -3.360      2.352      5.704      1.777
-                                   Charge sum:  0.000           Momentum sum:      0.000      0.000      3.052     10.948     10.514
+     3         11  (e-)               -21     1     0     5     6     0     0      0.000      0.000      5.746      5.746      0.000
+     4        -11  (e+)               -21     2     0     5     6     0     0      0.000      0.000     -4.000      4.000      0.000
+     5         15  tau-                23     3     4     0     0     0     0      3.428      2.842      0.878      4.874      1.777
+     6        -15  tau+                23     3     4     0     0     0     0     -3.428     -2.842      0.868      4.872      1.777
+                                   Charge sum:  0.000           Momentum sum:      0.000      0.000      1.746      9.746      9.588
 
  --------  End PYTHIA Event Listing  -----------------------------------------------------------------------------------------------
 
@@ -95,26 +96,84 @@ NMC 10000
      0         90  (system)           -11     0     0     0     0     0     0      0.000      0.000      3.000     11.000     10.583
      1         11  (e-)               -12     0     0    12     0     0     0      0.000      0.000      7.000      7.000      0.001
      2        -11  (e+)               -12     0     0    13     0     0     0      0.000      0.000     -4.000      4.000      0.001
-     3         11  (e-)               -21     7     7     5     6     0     0      0.000      0.000      7.000      7.000      0.000
-     4        -11  (e+)               -21     8     0     5     6     0     0      0.000      0.000     -3.948      3.948      0.000
-     5         15  (tau-)             -23     3     4     9     9     0     0      3.545      3.360      0.700      5.244      1.777
-     6        -15  (tau+)             -23     3     4    10    10     0     0     -3.545     -3.360      2.352      5.704      1.777
-     7         11  (e-)               -42    12    12     3     3     0     0      0.000     -0.000      7.000      7.000      0.000
-     8        -11  (e+)               -41    13    13    11     4     0     0     -0.000      0.000     -4.000      4.000      0.000
-     9         15  (tau-)             -44     5     5    14    14     0     0      3.546      3.358      0.699      5.243      1.777
-    10        -15  (tau+)             -44     6     6    15    15     0     0     -3.544     -3.361      2.353      5.705      1.777
-    11         22  (gamma)            -43     8     0    16    16     0     0     -0.002      0.004     -0.052      0.052      0.000
-    12         11  (e-)               -61     1     0     7     7     0     0      0.000      0.000      7.000      7.000      0.000
-    13        -11  (e+)               -61     2     0     8     8     0     0      0.000      0.000     -4.000      4.000      0.000
-    14         15  tau-                62     9     9     0     0     0     0      3.546      3.358      0.699      5.243      1.777
-    15        -15  tau+                62    10    10     0     0     0     0     -3.544     -3.361      2.353      5.705      1.777
-    16         22  gamma               62    11    11     0     0     0     0     -0.002      0.004     -0.052      0.052      0.000
+     3         11  (e-)               -21     7     0     5     6     0     0      0.000      0.000      5.746      5.746      0.000
+     4        -11  (e+)               -21     8     8     5     6     0     0      0.000      0.000     -4.000      4.000      0.000
+     5         15  (tau-)             -23     3     4     9     9     0     0      3.428      2.842      0.878      4.874      1.777
+     6        -15  (tau+)             -23     3     4    10    10     0     0     -3.428     -2.842      0.868      4.872      1.777
+     7         11  (e-)               -41    12    12    11     3     0     0     -0.000      0.000      7.000      7.000      0.000
+     8        -11  (e+)               -42    13    13     4     4     0     0      0.000     -0.000     -4.000      4.000      0.000
+     9         15  (tau-)             -44     5     5    14    14     0     0      3.426      2.845      0.878      4.874      1.777
+    10        -15  (tau+)             -44     6     6    15    15     0     0     -3.430     -2.839      0.868      4.872      1.777
+    11         22  (gamma)            -43     7     0    16    16     0     0      0.004     -0.005      1.254      1.254      0.000
+    12         11  (e-)               -61     1     0     7     7     0     0      0.000     -0.000      7.000      7.000      0.000
+    13        -11  (e+)               -61     2     0     8     8     0     0     -0.000      0.000     -4.000      4.000      0.000
+    14         15  tau-                62     9     9     0     0     0     0      3.426      2.845      0.878      4.874      1.777
+    15        -15  tau+                62    10    10     0     0     0     0     -3.430     -2.839      0.868      4.872      1.777
+    16         22  gamma               62    11    11     0     0     0     0      0.004     -0.005      1.254      1.254      0.000
     17         22  gamma               63     1     0     0     0     0     0      0.000      0.000      0.000      0.000      0.000
     18         22  gamma               63     2     0     0     0     0     0      0.000      0.000     -0.000      0.000      0.000
-                                   Charge sum:  0.000           Momentum sum:      0.000     -0.000      3.000     11.000     10.583
+                                   Charge sum:  0.000           Momentum sum:     -0.000     -0.000      3.000     11.000     10.583
 
  --------  End PYTHIA Event Listing  -----------------------------------------------------------------------------------------------
- PYTHIA Warning in PhaseSpace2to2tauyz::trialKin: maximum for cross section violated  
+ PYTHIA Warning in PhaseSpace2to2tauyz::finalKin: failed after mass assignment  
+
+ Pythia::next(): 100000 events have been generated 
+
+ Pythia::next(): 200000 events have been generated 
+
+ Pythia::next(): 300000 events have been generated 
+
+ Pythia::next(): 400000 events have been generated 
+
+ Pythia::next(): 500000 events have been generated 
+
+ Pythia::next(): 600000 events have been generated 
+
+ Pythia::next(): 700000 events have been generated 
+
+ Pythia::next(): 800000 events have been generated 
+
+ Pythia::next(): 900000 events have been generated 
+
+ Pythia::next(): 1000000 events have been generated 
+
+ Pythia::next(): 1100000 events have been generated 
+
+ Pythia::next(): 1200000 events have been generated 
+
+ Pythia::next(): 1300000 events have been generated 
+
+ Pythia::next(): 1400000 events have been generated 
+
+ Pythia::next(): 1500000 events have been generated 
+
+ Pythia::next(): 1600000 events have been generated 
+
+ Pythia::next(): 1700000 events have been generated 
+
+ Pythia::next(): 1800000 events have been generated 
+
+ Pythia::next(): 1900000 events have been generated 
+
+ Pythia::next(): 2000000 events have been generated 
+
+ Pythia::next(): 2100000 events have been generated 
+
+ Pythia::next(): 2200000 events have been generated 
+
+ Pythia::next(): 2300000 events have been generated 
+
+ Pythia::next(): 2400000 events have been generated 
+
+ Pythia::next(): 2500000 events have been generated 
+
+ Pythia::next(): 2600000 events have been generated 
+
+ Pythia::next(): 2700000 events have been generated 
+
+ Pythia::next(): 2800000 events have been generated 
+
+ Pythia::next(): 2900000 events have been generated 
 
  *-------  PYTHIA Event and Cross Section Statistics  -------------------------------------------------------------*
  |                                                                                                                 |
@@ -123,9 +182,9 @@ NMC 10000
  |                                                    |                                   |                        |
  |-----------------------------------------------------------------------------------------------------------------|
  |                                                    |                                   |                        |
- | f fbar -> f' fbar' (s-channel gamma*)          223 |      221191      10000      10000 |   5.980e-06  3.167e-08 |
+ | f fbar -> f' fbar' (s-channel gamma*)          223 |    77948939    3000008    3000000 |   6.002e-06  1.670e-09 |
  |                                                    |                                   |                        |
- | sum                                                |      221191      10000      10000 |   5.980e-06  3.167e-08 |
+ | sum                                                |    77948939    3000008    3000000 |   6.002e-06  1.670e-09 |
  |                                                                                                                 |
  *-------  End PYTHIA Event and Cross Section Statistics ----------------------------------------------------------*
 
@@ -133,63 +192,64 @@ NMC 10000
  |                                                                                                                 | 
  |  times   message                                                                                                | 
  |                                                                                                                 | 
- |    240   Warning in PhaseSpace2to2tauyz::trialKin: maximum for cross section violated                           | 
- |   3022   Warning in TauDecays::decay: unknown correlated tau production, assuming from unpolarized photon       | 
+ |      8   Warning in PhaseSpace2to2tauyz::finalKin: failed after mass assignment                                 | 
+ | 888116   Warning in TauDecays::decay: unknown correlated tau production, assuming from unpolarized photon       | 
  |                                                                                                                 | 
  *-------  End PYTHIA Error and Warning Messages Statistics  ------------------------------------------------------* 
 Gammatau2xmu: 0.000e+00
-
 Gammatau2xe: 0.000e+00
 
 BRtau2xmu: 0.000e+00
-
 BRtau2xe: 0.000e+00
-
 BRtau2xmu + BRtau2xe: 0.000e+00
 
-produced tau excluding those daughters are also tau lepton: 3.022e+03
-produced X: 0.000e+00
-produced X/NMC: 0.000e+00
+Total Gamma of X [GeV]: 7.354e-16
+ctau [m]: 2.683e-01
+
+loopB1(tau,mX): (-1.062e-01,-0.000e+00)
+loopB1(mu ,mX): (1.074e+00,-1.172e-01)
+loopB1(e  ,mX): (1.000e+00,-7.856e-06)
+
+Gammax2tautau: 0.000e+00
+Gammax2mumu: 7.319e-16
+Gammax2ee: 3.563e-18
+Gammax2gmgm: 1.691e-20
+
+BRx2tautau: 0.000e+00
+BRx2mumu: 9.951e-01
+BRx2ee: 4.844e-03
+BRx2gmgm: 2.299e-05
 
 Proportion of X flying forward (eta>0): -nan
 Proportion of X flying backward (eta<0): -nan
 
-Total Gamma [GeV]: 7.354e-16
-ctau [m]: 2.683e-01
+produced tau excluding those daughters are also tau lepton: 8.881e+05
+produced X: 0.000e+00
+produced X/NMC: 0.000e+00
 
-loopB1(tau,mX): (-1.062e-01,-0.000e+00)
+Prompt analysis results: 
+n_prompt_smallr: 0.000e+00
+n_prompt_d0z0: 0.000e+00
+n_prompt_baselineeff: 0.000e+00
 
-loopB1(mu ,mX): (1.074e+00,-1.172e-01)
+prompt small_r efficiencies (ind. and cum.): -nan -nan
+prompt d0z0 efficiencies (ind. and cum.): -nan -nan
+prompt baseline efficiencies (ind. and cum.): -nan -nan
 
-loopB1(e  ,mX): (1.000e+00,-7.856e-06)
+Displaced analysis results: 
+n_disp_fidvol: 0.000e+00
+n_disp_baselineeff: 0.000e+00
+n_disp_DispTrackEff: 0.000e+00
 
-Gammax2tautau: 0.000e+00
+displaced fiducial volume efficiencies (ind. and cum.): -nan -nan
+displaced baseline efficiencies (ind. and cum.): -nan -nan
+displaced displaced-tracking efficiencies (ind. and cum.): -nan -nan
 
-Gammax2mumu: 7.319e-16
-
-Gammax2ee: 3.563e-18
-
-Gammax2gmgm: 1.691e-20
-
-BRx2tautau: 0.000e+00
-
-BRx2mumu: 9.951e-01
-
-BRx2ee: 4.844e-03
-
-BRx2gmgm: 2.299e-05
-
-X: insideFidVol: 0.000e+00
-observedX: 0.000e+00
-visibleX: 0.000e+00
-
-X Observed Fiducial efficiency: -nan
-X Visible Fiducial efficiency: -nan
-
-reallyProduced tau: 9.200e+10
+Expected total signal numbers at Belle II with 50/ab:	 
 total number of tau-tau events: 4.600e+10
-
+reallyProduced tau: 9.200e+10
 reallyProducedX: 0.000e+00
-reallyobservedX: -nan
-reallyvisibleX: -nan
-
+Prompt_reallyobservedX: -nan
+Prompt_reallyvisibleX: -nan
+Displaced_reallyobservedX: -nan
+Displaced_reallyvisibleX: -nan

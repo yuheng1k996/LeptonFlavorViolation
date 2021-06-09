@@ -129,7 +129,7 @@ for i in range(len(sys.argv))[1:]:
                  line = next((l for l in f if "g_TM_L:" in l), None)
                  newdata[0,2]=line[line.find("g_TM_L:")+len("g_TM_L:"):]
             
-            '''with open(resdir+"/"+filename,'r') as f: 
+            with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "BRtau2xmu:" in l), None)
                  newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
             with open(resdir+"/"+filename,'r') as f: 
@@ -182,7 +182,7 @@ for i in range(len(sys.argv))[1:]:
                  newdata[0,19]=line[line.find("reallyobservedX:")+len("reallyobservedX:"):]
             with open(resdir+"/"+filename,'r') as f: 
                  line = next((l for l in f if "reallyvisibleX:" in l), None)
-                 newdata[0,20]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]'''
+                 newdata[0,20]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]
             data=np.vstack((data,newdata))
     #os.chdir(resdir)
         data=np.delete(data,0,0)
@@ -223,9 +223,9 @@ zlabel = r'$three_event$'
 filename = "g_vs_g_3_loop"
 
 #plot signal
-plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k', '-','$mX = 1.5   GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r', '-','$mX = 0.05  GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c', '-','$mX = 0.005 GeV$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k', '-',r'$m_{X} = 1.500 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r', '-',r'$m_{X} = 0.050 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c', '-',r'$m_{X} = 0.005 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 
 plt.legend(loc='lower left', shadow=True, fontsize='x-large')
