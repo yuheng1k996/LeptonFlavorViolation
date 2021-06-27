@@ -193,11 +193,11 @@ filename = "g_vs_m_0"
 #plot signal
 #[1E-12, 1e-4, 1E-12, 1e-6]
 
-plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.01, 1.8, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Prompt_reallyvisibleX: ")]*0.988/50, zlabel, title, filename, 'c','-',r'Prompt Belle', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.01, 1.8, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Displaced_reallyvisibleX: ")]*0.988/50, zlabel, title, filename, 'c','--',r'Displaced Belle', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.05, 1.85, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Prompt_reallyvisibleX: ")]*0.988/50, zlabel, title, filename, 'c','-',r'Prompt Belle', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.05, 1.85, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Displaced_reallyvisibleX: ")]*0.988/50, zlabel, title, filename, 'c','--',r'Displaced Belle', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
-plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.01, 1.8, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'k','-',r'Prompt Belle II', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.01, 1.8, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'k','--',r'Displaced Belle II', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.05, 1.85, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'k','-',r'Prompt Belle II', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("mX:")], xlabel, -0.05, 1.85, data1[:,KEYS.index("g_AB_L:")], ylabel, 1e-9, 1e-1, data1[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'k','--',r'Displaced Belle II', 3 , 1 ,[(0.8,5e-8)],'3signal')
 
 
 #use data files expoted by Mathematica where MovingAverage was used:

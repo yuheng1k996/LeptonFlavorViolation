@@ -133,10 +133,12 @@ bool pythia_card::initPythia() {
     return true;
 }
 
+
 bool pythia_card::runPythia(int nEventsMC) {
 
     double producedtau{};
     double producedX{};
+    double observedX{};
     
     double xForwardSphere{};
     double xBackwardSphere{};
@@ -148,6 +150,10 @@ bool pythia_card::runPythia(int nEventsMC) {
     double n_disp_fidvol{};
     double n_disp_baselineeff{};
     double n_disp_DispTrackEff{};
+    
+    double n_mod_DispTrackEffee{};
+    double n_mod_DispTrackEffmumu{};
+    double n_mod_DispTrackEff{};
 
     try{
         //creating files to scan
@@ -175,7 +181,7 @@ bool pythia_card::runPythia(int nEventsMC) {
 				//cut 1.1) enough hits in the vertex detector, realized by requiring small r
 				double rDec = sqrt(pow(pythia->event[i].xDec(),2)+pow(pythia->event[i].yDec(),2));
                         	if (  rDec < 100. )//in mm
-				{
+                {
 					n_prompt_smallr += 1.;
 					
 					//cut 1.2) small d0 and z0 for the llbar produced from x decay
@@ -184,29 +190,50 @@ bool pythia_card::runPythia(int nEventsMC) {
 					if (l1*l2){
 						n_prompt_d0z0 += 1.;
 						n_prompt_baselineeff += 1.*baselineefficiency(i);
-					}
-				}
+                    }
+                }
                     
                         
                     
                     //myfile << sqrt(pow(x1Prod,2)+pow(y1Prod,2))  << " " << z1Prod << " " <<   d1 <<  " " << z1 << " " << d2 << " " << z2 << '\n';
                  
 
-	
-				//2) displaced cuts
+                        
+                //2) displaced cuts
 				//cut 2.1) fiducial volume
                      		if(decayingInsideFidVol(pythia->event[i])){
 					n_disp_fidvol += 1.;
 					//cut 2.2) detector efficiency
 					n_disp_baselineeff += baselineefficiency(i);
 					n_disp_DispTrackEff += baselineefficiency(i) * DispTrackEff(pythia->event[i]);
-				}
+                }
+
 
 				//check number of x traveling forward or backward
                  		if (pythia->event[i].p().eta()>0)xForwardSphere+=1;
 				if (pythia->event[i].p().eta()<0)xBackwardSphere+=1;
 			}
-        	}
+                    
+                    
+                //3.1) modified exponential functions tau -> xe
+                    if(abs(pythia->event[pythia->event[i].daughter1()].id()) == 36 && abs(pythia->event[pythia->event[i].daughter2()].id()) != 11){
+				double p1 = decayProbabilityBelle2Part1(pythia->event[pythia->event[i].daughter1()]);
+				double p2 = decayProbabilityBelle2Part2(pythia->event[pythia->event[i].daughter1()]);
+                        	observedX += p1+p2;
+                        //baselineeff (tau -> eee) and (tau -> emumu)
+					    n_mod_DispTrackEffee += (p1+p2)*(0.060*BRx2ee(mX,g_TT_L,g_MM_L,g_EE_L)+0.061*BRx2mumu(mX,g_TT_L,g_MM_L,g_EE_L));
+
+                    }
+                //3.2) modified exponential functions tau -> xmu
+                    if(abs(pythia->event[pythia->event[i].daughter1()].id()) == 36 && abs(pythia->event[pythia->event[i].daughter2()].id()) != 13){
+				double p1 = decayProbabilityBelle2Part1(pythia->event[pythia->event[i].daughter1()]);
+				double p2 = decayProbabilityBelle2Part2(pythia->event[pythia->event[i].daughter1()]);
+                        	observedX += p1+p2;
+                        //baselineeff (tau -> muee) and (tau -> mumumu)
+					    n_mod_DispTrackEffmumu += (p1+p2)*(0.093*BRx2ee(mX,g_TT_L,g_MM_L,g_EE_L)+0.076*BRx2mumu(mX,g_TT_L,g_MM_L,g_EE_L));
+
+                    }
+            }
         }
         if(verbose)
             pythia->stat();
@@ -224,6 +251,10 @@ bool pythia_card::runPythia(int nEventsMC) {
     double Prompt_reallyvisibleX = n_prompt_baselineeff * BRx2Visibles(mX,g_TT_L,g_MM_L,g_EE_L) / producedX * reallyProducedX;
     double Displaced_reallyobservedX = n_disp_fidvol / producedX * reallyProducedX;
     double Displaced_reallyvisibleX = n_disp_DispTrackEff * BRx2Visibles(mX,g_TT_L,g_MM_L,g_EE_L) / producedX * reallyProducedX;
+    
+    n_mod_DispTrackEff = n_mod_DispTrackEffee + n_mod_DispTrackEffmumu;
+    double Modified_reallyobservedX = n_mod_DispTrackEff / producedX * reallyProducedX;
+    double Modified_reallyvisibleX = n_mod_DispTrackEff * BRx2Visibles(mX,g_TT_L,g_MM_L,g_EE_L) / producedX * reallyProducedX;
 
 
     // Results
@@ -272,9 +303,14 @@ bool pythia_card::runPythia(int nEventsMC) {
     std::cout << "n_disp_baselineeff: " << n_disp_baselineeff << '\n';
     std::cout << "n_disp_DispTrackEff: " << n_disp_DispTrackEff << '\n';
     std::cout << '\n';
+    std::cout << "observedX: " << observedX <<'\n';
+    std::cout << "n_mod_DispTrackEff: " << n_mod_DispTrackEff <<'\n';
+    std::cout << '\n';
     std::cout << "displaced fiducial volume efficiencies (ind. and cum.): " << n_disp_fidvol/producedX << " " << n_disp_fidvol/producedX  << '\n';
     std::cout << "displaced baseline efficiencies (ind. and cum.): " << n_disp_baselineeff/n_disp_fidvol << " " << n_disp_baselineeff/producedX << '\n';
     std::cout << "displaced displaced-tracking efficiencies (ind. and cum.): " << n_disp_DispTrackEff/n_disp_baselineeff << " " << n_disp_DispTrackEff/producedX << '\n';
+    std::cout << '\n';
+    std::cout << "modified efficiencies: " << n_disp_DispTrackEff/producedX << '\n';
     std::cout << '\n';
     std::cout << "Expected total signal numbers at Belle II with 50/ab:	 \n";
     std::cout << "total number of tau-tau events: " << number_total_tau_tau << '\n';
@@ -284,45 +320,33 @@ bool pythia_card::runPythia(int nEventsMC) {
     std::cout << "Prompt_reallyvisibleX: " << Prompt_reallyvisibleX << '\n';
     std::cout << "Displaced_reallyobservedX: " << Displaced_reallyobservedX << '\n';
     std::cout << "Displaced_reallyvisibleX: " << Displaced_reallyvisibleX << '\n';
-        
+    std::cout << '\n';
+    std::cout << "Modified_reallyobservedX: " << Modified_reallyobservedX << '\n';
+    std::cout << "Modified_reallyvisibleX: " << Modified_reallyvisibleX << '\n';
     
     return true;
 }
 
-
-double pythia_card::DispTrackEff(Pythia8::Particle XXX)//detector efficiency
-{
-    //fit the efficiency linearly
-    double rDec = sqrt(pow(XXX.xDec(),2)+pow(XXX.yDec(),2));
-    double rmin= 10.;
-    double rmax= 800.;
-    if(rDec<rmin || rDec>rmax){//for r smaller than rmin or larger than rmax, no detection
-	    return 0.;
-    }
-    else{// for r between rmin and rmax, use the linear interpolation
-        return -rDec/790. + 800./790.;
-    }
-}
-
+																																		
 
 //lepton flavor violation
+
+//physical quantities
+
 double pythia_card::Gammatau2xmu(double mX, double g_TM_L)
 {
 	return widthCalculator::violationLepWidth(mX, widthCalculator::mtau, widthCalculator::mmu, g_TM_L);
 }
-
 
 double pythia_card::Gammatau2xe(double mX, double g_TE_L)
 {
 	return widthCalculator::violationLepWidth(mX, widthCalculator::mtau, widthCalculator::me, g_TE_L);
 }
 
-
 double pythia_card::NewTotalGammatau(double mX, double g_TM_L, double g_TE_L)
 {
 	return widthCalculator::tauSMGamma + Gammatau2xmu(mX, g_TM_L) + Gammatau2xe(mX, g_TE_L);
 }
-
 
 double pythia_card::BRtau2xmu(double mX, double g_TM_L, double g_TE_L)
 {
@@ -333,9 +357,6 @@ double pythia_card::BRtau2xe(double mX, double g_TM_L, double g_TE_L)
 {
 	return Gammatau2xe(mX, g_TE_L) / NewTotalGammatau(mX, g_TM_L, g_TE_L);
 }
-
-
-
 
 
 
@@ -358,7 +379,6 @@ double pythia_card::Gammax2gmgm(double mX, double g_TT_L, double g_MM_L, double 
 {
 	return widthCalculator::pseudoscalarGmWidth(mX, widthCalculator::mtau, widthCalculator::mmu, widthCalculator::me, g_TT_L, g_MM_L, g_EE_L);
 }
-
 
 double pythia_card::totalGammaX(double mX, double g_TT_L, double g_MM_L, double g_EE_L)
 {
@@ -393,7 +413,6 @@ double pythia_card::BRx2gmgm(double mX, double g_TT_L, double g_MM_L, double g_E
 	return Gammax2gmgm(mX,g_TT_L,g_MM_L,g_EE_L)/totalGammaX(mX,g_TT_L,g_MM_L,g_EE_L);
 }
 
-
 double pythia_card::BRx2Visibles(double mX, double g_TT_L, double g_MM_L, double g_EE_L)
 {
 	double BRx2Visibles=1.-BRx2gmgm(mX,g_TT_L,g_MM_L,g_EE_L);
@@ -401,7 +420,8 @@ double pythia_card::BRx2Visibles(double mX, double g_TT_L, double g_MM_L, double
 }
 
 
-
+																																		
+//functions of cuts
 
 
 bool pythia_card::d0z0constraints(Pythia8::Particle XXX)
@@ -437,6 +457,22 @@ bool pythia_card::decayingInsideFidVol(Pythia8::Particle XXX)
 }
 
 
+double pythia_card::DispTrackEff(Pythia8::Particle XXX)//detector efficiency
+{
+    //fit the efficiency linearly (in mm)
+    double rDec = sqrt(pow(XXX.xDec(),2)+pow(XXX.yDec(),2));
+    double rmin= 10.;
+    double rmax= 800.;
+    if(rDec<rmin || rDec>rmax){//for r smaller than rmin or larger than rmax, no detection
+	    return 0.;
+    }
+    else{// for r between rmin and rmax, use the linear interpolation (eff=1 if r=10, eff=0 if r=800)
+        return 1*(rDec-rmax)/(rmin-rmax);
+    }
+}
+
+
+
 double pythia_card::baselineefficiency(int i)//i is the particle index of X in an event
 {
 	double epsilon{};
@@ -466,3 +502,74 @@ double pythia_card::baselineefficiency(int i)//i is the particle index of X in a
 }
 
 
+																																		
+//calculate the efficiency in an exponential integral
+
+double pythia_card::decayProbabilityBelle2Part1(Pythia8::Particle XXX) {//Part1 is a symmetric ATLAS-like detector
+    constexpr double R_I = 0.01;//in meter
+    constexpr double R_O = 0.8; 
+    constexpr double L_D = 0.4;
+
+    // Identify the kinematic properties of the pseudoscalar
+    //Pythia always calculates in GeV
+    double gamma = XXX.e()/(mX);
+    double beta_z = fabs(XXX.pz()/XXX.e());
+    double beta = sqrt(1. - pow(mX/XXX.e(), 2));
+    double theta = XXX.p().theta();            
+    double phi = XXX.p().phi();     
+
+    if (tan(theta) == 0.0) {
+        std::cout << "The impossible happened!" << std::endl;
+        return 0;
+    }      
+
+    double L1 = fabs(R_I/tan(theta));
+    if (L1 >= L_D)
+        return 0;
+    double L2 = std::min(L_D, fabs(R_O/tan(theta))) - L1;
+    
+    // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:            
+    // return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)) * (1. - exp(-L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))); //  not work anymore!!!
+     
+    // the efficiency is a function (1*(l-l_max)/(l_min-l_max)), l_min=0.01, eff=1, l_max=0.8, eff=0 ; therefore, for every dL, the modified dacay probability is
+    //exp(-L/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))*(1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))*(1*(L*tan(theta)-0.8)/(0.01-0.8))*dL,from L1 to L1+L2
+    
+    return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1.01266 - 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L1)) + exp(-(L1+L2)/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (-1.01266 + 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L2+L1));
+    //note that r should be non-negative, so it is necessary to take the absolute value of tan(theta)
+}
+
+
+double pythia_card::decayProbabilityBelle2Part2(Pythia8::Particle XXX) {//Part2 is AL3X-like
+    constexpr double L_D = 0.4;//horizontal distance from the IP to the detector
+    constexpr double L_L = 0.01;//vertical distance from the IP to the detector  or  equivalently the inner radius
+    constexpr double L_d = 0.8;// length of the detector: 120 - 40 = 80 cm
+    constexpr double L_H = 0.79;// transverse length = 80 - 1 = 79 cm
+
+    // Identify the kinematic properties of the neutralino
+    //Pythia always calculates in GeV
+    double gamma = XXX.e()/(mX);
+    double beta_z = fabs(XXX.pz()/XXX.e());
+    double beta = sqrt(1. - pow(mX/XXX.e(), 2));
+    double theta = XXX.p().theta();            
+    double phi = XXX.p().phi();     
+ 
+
+    if (tan(theta) == 0.0) {
+        std::cout << "The impossible happened!" << std::endl;
+        return 0;
+    }
+    
+    double L1 = std::min(std::max(L_D,L_L/tan(theta)), L_D + L_d);
+    double L2 = std::min(std::max(L_D,(L_L + L_H)/tan(theta)), L_D + L_d) - L1;
+    
+    if (L_L/tan(theta) >= L_D+L_d) // theta too small, pseudoscalar flying too lowly
+        return 0;
+    if ((L_L + L_H)/tan(theta) <= L_D) //theta too large, pseudoscalar flying too highly
+        return 0;
+    
+    // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:            
+    //return  exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1. - exp(-L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))); 
+   
+      return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1.01266 - 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L1)) + exp(-(L1+L2)/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (-1.01266 + 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L2+L1));
+   
+}
