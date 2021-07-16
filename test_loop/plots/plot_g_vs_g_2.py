@@ -4,6 +4,10 @@ import matplotlib
 matplotlib.use('Agg')
 import re
 import os, sys
+#clean the storage folder before reading .out files
+os.system("rm -rf storage/results_g_g_2/2_max/.ipynb_checkpoints")
+os.system("rm -rf storage/results_g_g_2/2_med/.ipynb_checkpoints")
+os.system("rm -rf storage/results_g_g_2/2_min/.ipynb_checkpoints")
 import pickle, cPickle
 import pprint
 from math import fabs, log, exp
@@ -25,7 +29,7 @@ from matplotlib.pyplot import text
 
 #This script needs to be executed in python2
 
-def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title, filename, linecolor, contourstyle, linelabel, contourlevel, contourlinewidth, clabel_positions, clabelformat):
+def plot_logx_logy_logz(xvalues, xlabel, xmin, xmax, yvalues, ylabel, ymin, ymax, zvalues, zlabel, title, filename, linecolor, contourstyle, linelabel, contourlevel, contourlinewidth, clabel_positions, clabelformat):
     print ("Plotting '"+title+"'")
 
     # remove invalid entries which have either x or z <= 0
@@ -36,22 +40,24 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
            newX.append(xvalues[i])
            newY.append(yvalues[i])
            if zvalues[i] == 0:
-              newZ.append(1E-99)
+                newZ.append(1E-99)
            else:
-              newZ.append(zvalues[i])
+                newZ.append(zvalues[i])
 	   
     x = np.array(map(log10, newX))
     y = np.array(map(log10, newY))
     z = np.array(newZ)
     
     if len(x) == 0:
-       return
+        return
     plt.xlabel(xlabel,fontsize = 16)
     plt.ylabel(ylabel,fontsize = 16)
     plt.title(title,fontsize = 16)
     
     #scenario_024
-    plt.axis([1E-12, 1e-5, 1E-10, 1e-6])
+    plt.axis([xmin, xmax, ymin, ymax])
+    #scenario_13
+    #plt.axis([1E-9, 1e-1, 1E-10, 1e-6])
     zmin, zmax =  1E-3, 1E3 #min([z[i] for i in range(len(z)) if x[i] >= -9 and x[i] <= -5 and y[i] >= -9 and y[i] <= -5 and z[i] != 0.])
 
     ax.set_xscale('log')
@@ -80,8 +86,8 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
     #ax.pcolormesh(X,Y,Zm,vmin=zmin,vmax=zmax,shading='gouraud', norm=mpl.colors.LogNorm(),cmap = colmap)
 
 
-    ax.plot(xg,-1*yg,linecolor,label=linelabel)
-    cons2 = plt.contour(X, Y, Zm, [contourlevel] ,colors=linecolor,locator=mpl.ticker.LogLocator(), linewidths=contourlinewidth, linestyles = contourstyle)
+    ax.plot(xg,-1*yg,linecolor,label=linelabel,linestyle=contourstyle)
+    cons2 = plt.contour(X, Y, Zm, [contourlevel] ,colors=linecolor,locator=mpl.ticker.LogLocator(), linewidths=contourlinewidth, linestyles=contourstyle)
 #
 
 
@@ -93,6 +99,24 @@ def plot_logx_logy_logz(xvalues, xlabel, yvalues, ylabel, zvalues, zlabel, title
 sigmaBrtaupinu=0.057e-2
 ##############
 
+def Read(fname, key = "(ind. and cum.):"):
+    f = open(fname)
+    data = f.read()
+    sd = data.split(key)[1:]
+    Ind, Cum = [], []
+    for s in sd:
+        s = s[:s.find("\n")]
+        s = s.split(' ')
+        Ind.append(float(s[1]))
+        Cum.append(float(s[2]))
+    return Ind, Cum
+
+def ReadLine(resdir, filename, key):
+#     key = key + ":"
+    with open(resdir+"/"+filename,'r') as f: 
+        line = next((l for l in f if key in l), None)
+        return line[line.find(key)+len(key):]
+
 ########################################################################################################
 ########################################################################################################
 ########################################################################################################
@@ -101,97 +125,47 @@ print ("Reading in Data")
 fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
 ax = fig.add_subplot(1, 1, 1) 
 massstring = 'test'
+keys = ["mX:", "g_MM_L:", "g_TE_L:","BRtau2xmu:", "BRtau2xe:", "BRtau2xmu + BRtau2xe:", "produced tau excluding those daughters are also tau lepton:", "BRx2tautau:", "BRx2mumu:", "BRx2ee:", "BRx2gmgm:", "Total Gamma of X [GeV]: ", "ctau [m]:", "produced X:", "n_prompt_smallr: ", "n_prompt_d0z0: ", "n_prompt_baselineeff: ", "prompt small_r efficiencies (ind. and cum.): ", "prompt d0z0 efficiencies (ind. and cum.): ", "prompt baseline efficiencies (ind. and cum.): ", "n_disp_fidvol: ", "n_disp_baselineeff: ", "n_disp_DispTrackEff: ", "displaced fiducial volume efficiencies (ind. and cum.): ", "displaced baseline efficiencies (ind. and cum.): ", "displaced displaced-tracking efficiencies (ind. and cum.): ", "n_mod_DispTrackEff: ", "modified efficiencies: ", "reallyProducedX: ", "Prompt_reallyobservedX: ", "Prompt_reallyvisibleX: ", "Displaced_reallyobservedX: ", "Displaced_reallyvisibleX: ", "Modified_reallyobservedX: ", "Modified_reallyvisibleX: "]
 for i in range(len(sys.argv))[1:]:
-  resdircollection = sys.argv[i]
-  print ("")
-  for resdir in resdircollection.split(":"):
+    resdircollection = sys.argv[i]
+    print ("")
+    for resdir in resdircollection.split(":"):
     #os.chdir(resdir)
-        data=np.zeros((1,21))
+        data=np.zeros((1,41))
         print (" - "+resdir)
         #counter = 0
         for filename in os.listdir(resdir):
-            newdata=np.zeros((1,21))
+            newdata=np.zeros((1,41))
+            
+            ndata = 0
+            KEYS = []
+            for k in keys:
+                if "(ind. and cum.)" in k:
+                    test = ReadLine(resdir, filename, k)
+                    newdata[0,ndata] = test.split()[0]
+                    KEYS.append(k[:k.find("(ind. and cum.)")] + "(ind.)")
+                    newdata[0,ndata+1] = test.split()[1]
+                    KEYS.append(k[:k.find("(ind. and cum.)")] + "(cum.)")
+                    ndata +=2
+                else:
+                    newdata[0,ndata] = ReadLine(resdir, filename, k)
+                    KEYS.append(k)
+                    ndata +=1
             #print(filename)
             #counter = counter + 1
             #print(counter)
             #print (resdir+"/"+filename)
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "mX:" in l), None)
-                 newdata[0,0]=line[line.find("mX:")+len("mX:"):]
-            
-            #scenario_24
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_MM_L:" in l), None)
-                 newdata[0,1]=line[line.find("g_MM_L:")+len("g_MM_L:"):]
-            
-            #scenario_12
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "g_TE_L:" in l), None)
-                 newdata[0,2]=line[line.find("g_TE_L:")+len("g_TE_L:"):]
-            
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRtau2xmu:" in l), None)
-                 newdata[0,3]=line[line.find("BRtau2xmu:")+len("BRtau2xmu:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRtau2xe:" in l), None)
-                 newdata[0,4]=line[line.find("BRtau2xe:")+len("BRtau2xe:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRtau2xmu + BRtau2xe:" in l), None)
-                 newdata[0,5]=line[line.find("BRtau2xmu + BRtau2xe:")+len("BRtau2xmu + BRtau2xe:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "produced tau excluding those daughters are also tau lepton:" in l), None)
-                 newdata[0,6]=line[line.find("produced tau excluding those daughters are also tau lepton:")+len("produced tau excluding those daughters are also tau lepton:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "produced X:" in l), None)
-                 newdata[0,7]=line[line.find("produced X:")+len("produced X:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "Total Gamma [GeV]:" in l), None)
-                 newdata[0,8]=line[line.find("Total Gamma [GeV]:")+len("Total Gamma [GeV]:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "ctau [m]:" in l), None)
-                 newdata[0,9]=line[line.find("ctau [m]:")+len("ctau [m]:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRx2tautau:" in l), None)
-                 newdata[0,10]=line[line.find("BRx2tautau:")+len("BRx2tautau:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRx2mumu:" in l), None)
-                 newdata[0,11]=line[line.find("BRx2mumu:")+len("BRx2mumu:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRx2ee:" in l), None)
-                 newdata[0,12]=line[line.find("BRx2ee:")+len("BRx2ee:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "BRx2gmgm:" in l), None)
-                 newdata[0,13]=line[line.find("BRx2gmgm:")+len("BRx2gmgm:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "observedX:" in l), None)
-                 newdata[0,14]=line[line.find("observedX:")+len("observedX:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "visibleX:" in l), None)
-                 newdata[0,15]=line[line.find("visibleX:")+len("visibleX:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "X Observed Fiducial efficiency:" in l), None)
-                 newdata[0,16]=line[line.find("X Observed Fiducial efficiency:")+len("X Observed Fiducial efficiency:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "X Visible Fiducial efficiency:" in l), None)
-                 newdata[0,17]=line[line.find("X Visible Fiducial efficiency:")+len("X Visible Fiducial efficiency:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "reallyProducedX:" in l), None)
-                 newdata[0,18]=line[line.find("reallyProducedX:")+len("reallyProducedX:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "reallyobservedX:" in l), None)
-                 newdata[0,19]=line[line.find("reallyobservedX:")+len("reallyobservedX:"):]
-            with open(resdir+"/"+filename,'r') as f: 
-                 line = next((l for l in f if "reallyvisibleX:" in l), None)
-                 newdata[0,20]=line[line.find("reallyvisibleX:")+len("reallyvisibleX:"):]
+           
+            #data = data.astype(np.double)
             data=np.vstack((data,newdata))
     #os.chdir(resdir)
         data=np.delete(data,0,0)
-  if i==1:
-    data1=data
-  elif i==2:
-    data2=data
-  elif i==3:
-    data3=data
+    if i==1:
+        data1=data
+    elif i==2:
+        data2=data
+    elif i==3:
+        data3=data
     
     
         
@@ -201,7 +175,13 @@ data1[where_are_NaNs] = 0
 where_are_NaNs = isnan(data2)
 data2[where_are_NaNs] = 0
 where_are_NaNs = isnan(data3)
-data2[where_are_NaNs] = 0
+data3[where_are_NaNs] = 0
+
+
+#export data
+#np.savetxt("plots/data/data_311.dat", data, fmt="%s")
+
+
 
 # os.chdir("..")	   
 print ("Plotting")
@@ -213,31 +193,161 @@ fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
 ax = fig.add_subplot(1, 1, 1) 
 plt.rc("text", usetex=True)
          
+#title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
 
 #scenario_2
-title = r'$g_{\tau e}$ vs. $g_{\mu \mu}$'
-xlabel = r'$g_{\mu \mu}$ [GeV$^{-1}$]'
+title = r'$g_{\tau e}$ vs. $g_{ee} (Belle II)$'
+xlabel = r'$g_{ee}$ [GeV$^{-1}$]'
 ylabel = r'$g_{\tau e}$ [GeV$^{-1}$]'
 zlabel = r'$three_event$'
-filename = "g_vs_g_2_loop"
+filename = "g_vs_g_2"
 
 #plot signal
-plot_logx_logy_logz(data1[:,1], xlabel, data1[:,2], ylabel, data1[:,20], zlabel, title, filename, 'k', '-',r'$m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data2[:,1], xlabel, data2[:,2], ylabel, data2[:,20], zlabel, title, filename, 'r', '-',r'$m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
-plot_logx_logy_logz(data3[:,1], xlabel, data3[:,2], ylabel, data3[:,20], zlabel, title, filename, 'c', '-',r'$m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+#[1E-12, 1e-5, 1E-10, 1e-6]
 
 
-plt.legend(loc='lower left', shadow=True, fontsize='x-large')
+plot_logx_logy_logz(data3[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data3[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data3[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'c','-',r'Prompt $\:m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data2[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data2[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'r','-',r'Prompt $\: m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data1[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data1[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'k','-',r'Prompt $\: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plot_logx_logy_logz(data3[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data3[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data3[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'c','--',r'Displaced $\: m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data2[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data2[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'r','--',r'Displaced $\: m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data1[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data1[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'k','--',r'Displaced $\: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+
+#plt.legend(loc='upper right',prop={'size': 9})
+plt.legend(loc='lower left', shadow=True, fontsize='small')
+
+
+#plot ctau
+plt.grid(which='major',axis='x',alpha=0.5,linestyle='--',linewidth=0.5)
+plt.grid(which='major',axis='y',alpha=0.5,linestyle='--',linewidth=0.5)
+
+plt.savefig("plots/"+filename+".png",bbox_inches='tight')
+plt.show()
+
+#br vs ctau plot
+plt.clf()#clear the current figure
+
+print ("Plotting")
+
+font = {'size'   : 18}
+mpl.rc('font', family='serif')
+plt.rc("text", usetex=True)
+fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
+ax = fig.add_subplot(1, 1, 1) 
+plt.rc("text", usetex=True)
+
+#scenario_1
+title = r'${\rm Br}(\tau \to X \, e)$ vs. $c\tau(X \longrightarrow \mu \, \bar{\mu}) (Belle II)$'
+xlabel = r'$c\tau(X \longrightarrow \mu \, \bar{\mu})$ [m]'
+ylabel = r'${\rm Br}(\tau \longrightarrow X \, e)$'
+zlabel = r'$three_event$'
+filename = "br_vs_ct_2"
+
+#plt.cla()#clear the current axes
+#[1E-4, 1e+2, 1E-10, 1e-3]
+plot_logx_logy_logz(data3[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data3[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data3[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'c','-',r'Prompt$ \: m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data2[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data2[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'r','-',r'Prompt$ \: m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data1[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data1[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'k','-',r'Prompt$ \: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plot_logx_logy_logz(data3[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data3[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data3[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'c','--',r'Displaced$ \:m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data2[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data2[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'r','--',r'Displaced$ \:m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data1[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data1[:,KEYS.index("Displaced_reallyvisibleX: ")], zlabel, title, filename, 'k','--',r'Displaced$ \: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plt.legend(loc='upper center', shadow=True, fontsize='small')
 
 plt.grid(which='major',axis='x',alpha=0.5,linestyle='--',linewidth=0.5)
 plt.grid(which='major',axis='y',alpha=0.5,linestyle='--',linewidth=0.5)
 
 plt.savefig("plots/"+filename+".png",bbox_inches='tight')
 
+plt.clf()#clear the current figure
+
+##################################################################################################################################################################################
+# the modified plot
+
+print ("Plotting")
+
+font = {'size'   : 18}
+mpl.rc('font', family='serif')
+plt.rc("text", usetex=True)
+fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
+ax = fig.add_subplot(1, 1, 1) 
+plt.rc("text", usetex=True)
+         
+#title = r'$\epsilon_{\textrm{det.}}=8.4\%$' 
+
+#scenario_1
+title = r'$g_{\tau e}$ vs. $g_{\mu \mu} (Belle II)$'
+xlabel = r'$g_{\mu \mu}$ [GeV$^{-1}$]'
+ylabel = r'$g_{\tau e}$ [GeV$^{-1}$]'
+zlabel = r'$three_event$'
+filename = "g_vs_g_2_mod"
+
+#plot signal
+#[1E-12, 1e-5, 1E-10, 1e-6]
+
+
+plot_logx_logy_logz(data3[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data3[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data3[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'c','-',r'Prompt $\:m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data2[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data2[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'r','-',r'Prompt $\: m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data1[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data1[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'k','-',r'Prompt $\: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plot_logx_logy_logz(data3[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data3[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data3[:,KEYS.index("Modified_reallyvisibleX: ")], zlabel, title, filename, 'c','--',r'Displaced $\: m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data2[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data2[:,KEYS.index("Modified_reallyvisibleX: ")], zlabel, title, filename, 'r','--',r'Displaced $\: m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("g_MM_L:")], xlabel, 1e-12, 1e-5, data1[:,KEYS.index("g_TE_L:")], ylabel, 1e-10, 1e-6, data1[:,KEYS.index("Modified_reallyvisibleX: ")], zlabel, title, filename, 'k','--',r'Displaced $\: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+
+#plt.legend(loc='upper right',prop={'size': 9})
+plt.legend(loc='lower left', shadow=True, fontsize='small')
+
+
+
+#plot ctau
+
+plt.grid(which='major',axis='x',alpha=0.5,linestyle='--',linewidth=0.5)
+plt.grid(which='major',axis='y',alpha=0.5,linestyle='--',linewidth=0.5)
+
+plt.savefig("plots/"+filename+".png",bbox_inches='tight')
+plt.show()
 
 #br vs ctau plot
 plt.clf()#clear the current figure
+
+print ("Plotting")
+
+font = {'size'   : 18}
+mpl.rc('font', family='serif')
+plt.rc("text", usetex=True)
+fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
+ax = fig.add_subplot(1, 1, 1) 
+plt.rc("text", usetex=True)
+
+#scenario_1
+title = r'${\rm Br}(\tau \to X \, e)$ vs. $c\tau(X \to \mu \, \bar{\mu}) (Belle II)$'
+xlabel = r'$c\tau(X \longrightarrow \mu \, \bar{\mu})$ [m]'
+ylabel = r'${\rm Br}(\tau \longrightarrow X \, e)$'
+zlabel = r'$three_event$'
+filename = "br_vs_ct_2_mod"
+
 #plt.cla()#clear the current axes
+#[1E-4, 1e+2, 1E-10, 1e-3]
+plot_logx_logy_logz(data3[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data3[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data3[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'c','-',r'Prompt$ \: m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data2[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data2[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'r','-',r'Prompt$ \: m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data1[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data1[:,KEYS.index("Prompt_reallyvisibleX: ")], zlabel, title, filename, 'k','-',r'Prompt$ \: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plot_logx_logy_logz(data3[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data3[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data3[:,KEYS.index("Modified_reallyvisibleX: ")], zlabel, title, filename, 'c','--',r'Displaced$ \:m_{X} = 0.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data2[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data2[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data2[:,KEYS.index("Modified_reallyvisibleX: ")], zlabel, title, filename, 'r','--',r'Displaced$ \:m_{X} = 1.0 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+plot_logx_logy_logz(data1[:,KEYS.index("ctau [m]:")], xlabel, 1e-6, 1e+2, data1[:,KEYS.index("BRtau2xmu + BRtau2xe:")], ylabel, 1e-10, 1e-3, data1[:,KEYS.index("Modified_reallyvisibleX: ")], zlabel, title, filename, 'k','--',r'Displaced$ \: m_{X} = 1.5 \: \textrm{GeV}$', 3 , 1 ,[(0.8,5e-8)],'3signal')
+
+plt.legend(loc='upper center', shadow=True, fontsize='small')
+
+plt.grid(which='major',axis='x',alpha=0.5,linestyle='--',linewidth=0.5)
+plt.grid(which='major',axis='y',alpha=0.5,linestyle='--',linewidth=0.5)
+
+plt.savefig("plots/"+filename+".png",bbox_inches='tight')
+
+#################################################################################################################################################################################
 
 fig = plt.figure(num=None, figsize=(5,4), dpi=300, facecolor='w', edgecolor='k')
 ax = fig.add_subplot(1, 1, 1)

@@ -289,7 +289,10 @@ plt.grid(which='major',axis='y',alpha=0.5,linestyle='--',linewidth=0.5)
 
 plt.savefig("plots/"+filename+".png",bbox_inches='tight')
 
+plt.clf()#clear the current figure
+
 ##################################################################################################################################################################################
+# the modified plot
 
 print ("Plotting")
 

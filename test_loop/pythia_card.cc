@@ -59,6 +59,10 @@ bool pythia_card::initPythia() {
         pythia->readString("Beams:eB = 4.");
 
         pythia->readString("WeakSingleBoson:ffbar2ffbar(s:gm) = on"); //off-shell photon -> 15% efficiency (N_{tautau}/NMC~15%) but fast.
+        //pythia->readString("NewGaugeBoson:ffbar2gmZZprime = on");
+        //pythia->readString("Zprime:gmZmode = 1");
+        //pythia->readString("22:oneChannel =  1 1 103 15 -15 ");//
+        //pythia->readString("32:oneChannel =  1 1 103 15 -15 ");//
 
 	//The following gives 100% efficiency to tautau, but very slow
         //pythia->readString("WeakSingleBoson:ffbar2ffbar(s:gmZ) = on"); //off-shell photon or Z0
@@ -216,7 +220,7 @@ bool pythia_card::runPythia(int nEventsMC) {
                     
                     
                 //3.1) modified exponential functions tau -> xe
-                    if(abs(pythia->event[pythia->event[i].daughter1()].id()) == 36 && abs(pythia->event[pythia->event[i].daughter2()].id()) != 11){
+                    if(abs(pythia->event[pythia->event[i].daughter1()].id()) == 36 && abs(pythia->event[pythia->event[i].daughter2()].id()) == 11){
 				double p1 = decayProbabilityBelle2Part1(pythia->event[pythia->event[i].daughter1()]);
 				double p2 = decayProbabilityBelle2Part2(pythia->event[pythia->event[i].daughter1()]);
                         	observedX += p1+p2;
@@ -225,7 +229,7 @@ bool pythia_card::runPythia(int nEventsMC) {
 
                     }
                 //3.2) modified exponential functions tau -> xmu
-                    if(abs(pythia->event[pythia->event[i].daughter1()].id()) == 36 && abs(pythia->event[pythia->event[i].daughter2()].id()) != 13){
+                    if(abs(pythia->event[pythia->event[i].daughter1()].id()) == 36 && abs(pythia->event[pythia->event[i].daughter2()].id()) == 13){
 				double p1 = decayProbabilityBelle2Part1(pythia->event[pythia->event[i].daughter1()]);
 				double p2 = decayProbabilityBelle2Part2(pythia->event[pythia->event[i].daughter1()]);
                         	observedX += p1+p2;
@@ -528,8 +532,8 @@ double pythia_card::decayProbabilityBelle2Part1(Pythia8::Particle XXX) {//Part1 
         return 0;
     double L2 = std::min(L_D, fabs(R_O/tan(theta))) - L1;
     
-    // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:            
-    // return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)) * (1. - exp(-L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))); //  not work anymore!!!
+    // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:    
+     //return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1. - exp(-L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))));
      
     // the efficiency is a function (1*(l-l_max)/(l_min-l_max)), l_min=0.01, eff=1, l_max=0.8, eff=0 ; therefore, for every dL, the modified dacay probability is
     //exp(-L/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))*(1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))*(1*(L*tan(theta)-0.8)/(0.01-0.8))*dL,from L1 to L1+L2
@@ -567,9 +571,22 @@ double pythia_card::decayProbabilityBelle2Part2(Pythia8::Particle XXX) {//Part2 
     if ((L_L + L_H)/tan(theta) <= L_D) //theta too large, pseudoscalar flying too highly
         return 0;
     
+    // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:    
+    double efficiency = (20*(-4 + 5*(L1 + L2 + (beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))*tan(theta) + 
+       exp(L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))*(4 - 5*(L1 + (beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))*tan(theta))))/
+   (79.*exp((L1 + L2)/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))));
+        
+        
+        //exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1.01266 - 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L1)) + exp(-(L1+L2)/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (-1.01266 + 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L2+L1));
+        //exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1. - exp(-L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))));
+    if (efficiency < 0 ){
+        std::cout << "L1: "<< L1 << ", L2: " << L2  <<", ctau: "<<  ctau(mX, g_TT_L, g_MM_L, g_EE_L) << ", beta_z: " << beta_z << ", gamma: "<< gamma << ", tantheta:" << tan(theta) <<", efficiency: " << std::setprecision(20) << -efficiency << '\n';
+    }
+     return efficiency; //  not work anymore!!!
+    
     // The probability that the pseudoscalar would decay in the detector is then as follows (Decay law:            
     //return  exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1. - exp(-L2/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)))); 
    
-      return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1.01266 - 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L1)) + exp(-(L1+L2)/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (-1.01266 + 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L2+L1));
+      //return exp(-L1/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (1.01266 - 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L1)) + exp(-(L1+L2)/(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L))) * (-1.01266 + 1.26582*fabs(tan(theta))*(beta_z*gamma*ctau(mX, g_TT_L, g_MM_L, g_EE_L)+ L2+L1));
    
 }
